@@ -26,9 +26,9 @@ namespace ExpenseTracker.Models
         public DateTime UpdatedAt { get; set; }
         public DateTime LastLoginAt { get; set; }
 
-        public ICollection<TransactionGroup> TransactionGroups { get; set; } = new List<TransactionGroup>();
+        public List<TransactionGroup> TransactionGroups { get; set; } = new();
 
-        public ICollection<SavingsPlan> SavingPlans { get; set; } = new List<SavingsPlan>();
+        public List<SavingsPlan> SavingPlans { get; set; } = new();
 
     }
 }

@@ -22,7 +22,7 @@ namespace ExpenseTracker.Models
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; }
 
-        public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
-        public ICollection<Reminder> Reminders { get; set; } = new List<Reminder>();
+        public List<Transaction> Transactions { get; set; } = new();
+        public List<Reminder> Reminders { get; set; } = new();
     }
 }
