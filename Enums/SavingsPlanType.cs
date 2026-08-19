@@ -1,8 +1,7 @@
-﻿namespace ExpenseTracker.Enums
+﻿namespace ExpenseTracker.Enums;
+
+public enum SavingsPlanType
 {
-    public enum SavingsPlanType
-    {
-        FixedMonthly = 0,
-        Flexible = 1
-    }
+    FixedMonthly = 0,
+    Flexible = 1
 }

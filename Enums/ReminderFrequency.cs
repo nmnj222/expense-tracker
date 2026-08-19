@@ -1,8 +1,7 @@
-﻿namespace ExpenseTracker.Enums
+﻿namespace ExpenseTracker.Enums;
+
+public enum ReminderFrequency
 {
-    public enum ReminderFrequency
-    {
-        Monthly = 0,
-        Weekly = 1
-    }
+    Monthly = 0,
+    Weekly = 1
 }

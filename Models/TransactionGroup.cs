@@ -1,28 +1,27 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using ExpenseTracker.Enums;
 
-namespace ExpenseTracker.Models
+namespace ExpenseTracker.Models;
+
+[Table("transaction_group")]
+public class TransactionGroup
 {
-    [Table("transaction_group")]
-    public class TransactionGroup
-    {
-        public int Id { get; set; }
+    public int Id { get; set; }
 
-        [Column(TypeName = "varchar(200)")]
-        public required string Name { get; set; }
+    [Column(TypeName = "varchar(200)")]
+    public required string Name { get; set; }
 
-        public int UserId { get; set; }
+    public int UserId { get; set; }
 
-        public required User User { get; set; }
+    public required User User { get; set; }
 
-        public int MonthlyCap { get; set; }
+    public int MonthlyCap { get; set; }
 
-        public TransactionType TransactionType { get; set; }
+    public TransactionType TransactionType { get; set; }
 
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public DateTime UpdatedAt { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime UpdatedAt { get; set; }
 
-        public List<Transaction> Transactions { get; set; } = new();
-        public List<Reminder> Reminders { get; set; } = new();
-    }
+    public List<Transaction> Transactions { get; set; } = new();
+    public List<Reminder> Reminders { get; set; } = new();
 }
