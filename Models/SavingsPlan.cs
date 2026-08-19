@@ -2,7 +2,7 @@
 
 namespace expense_tracker.Models
 {
-    [Table("saving_plans")]
+    [Table("saving_plan")]
     public class SavingsPlan
     {
         public int Id { get; set; }

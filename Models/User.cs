@@ -2,7 +2,7 @@
 
 namespace expense_tracker.Models
 {
-    [Table("users")]
+    [Table("user")]
     public class User
     {
         public int Id { get; set; }

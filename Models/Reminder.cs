@@ -2,7 +2,7 @@
 
 namespace expense_tracker.Models
 {
-    [Table("reminders")]
+    [Table("reminder")]
     public class Reminder
     {
         public int Id { get; set; }
