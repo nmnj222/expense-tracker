@@ -13,10 +13,6 @@ namespace expense_tracker.Models
 
         public required TransactionGroup TransactionGroup { get; set; }
 
-        public int UserId { get; set; }
-
-        public required User User { get; set; }
-
         public bool IsEnabled { get; set; }
 
         public int AmountThreshold { get; set; }
