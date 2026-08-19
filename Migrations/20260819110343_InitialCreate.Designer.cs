@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using expense_tracker.Data;
+using ExpenseTracker.Data;
 
 #nullable disable
 
-namespace expense_tracker.Migrations
+namespace ExpenseTracker.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20260819110343_InitialCreate")]
@@ -25,7 +25,7 @@ namespace expense_tracker.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("expense_tracker.Models.Reminder", b =>
+            modelBuilder.Entity("ExpenseTracker.Models.Reminder", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -64,7 +64,7 @@ namespace expense_tracker.Migrations
                     b.ToTable("reminders");
                 });
 
-            modelBuilder.Entity("expense_tracker.Models.SavingsPlan", b =>
+            modelBuilder.Entity("ExpenseTracker.Models.SavingsPlan", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -110,7 +110,7 @@ namespace expense_tracker.Migrations
                     b.ToTable("saving_plans");
                 });
 
-            modelBuilder.Entity("expense_tracker.Models.Transaction", b =>
+            modelBuilder.Entity("ExpenseTracker.Models.Transaction", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -143,7 +143,7 @@ namespace expense_tracker.Migrations
                     b.ToTable("transactions");
                 });
 
-            modelBuilder.Entity("expense_tracker.Models.TransactionGroup", b =>
+            modelBuilder.Entity("ExpenseTracker.Models.TransactionGroup", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -177,7 +177,7 @@ namespace expense_tracker.Migrations
                     b.ToTable("transaction_groups");
                 });
 
-            modelBuilder.Entity("expense_tracker.Models.User", b =>
+            modelBuilder.Entity("ExpenseTracker.Models.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -220,9 +220,9 @@ namespace expense_tracker.Migrations
                     b.ToTable("users");
                 });
 
-            modelBuilder.Entity("expense_tracker.Models.Reminder", b =>
+            modelBuilder.Entity("ExpenseTracker.Models.Reminder", b =>
                 {
-                    b.HasOne("expense_tracker.Models.TransactionGroup", "TransactionGroup")
+                    b.HasOne("ExpenseTracker.Models.TransactionGroup", "TransactionGroup")
                         .WithMany("Reminders")
                         .HasForeignKey("TransactionGroupId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -231,9 +231,9 @@ namespace expense_tracker.Migrations
                     b.Navigation("TransactionGroup");
                 });
 
-            modelBuilder.Entity("expense_tracker.Models.SavingsPlan", b =>
+            modelBuilder.Entity("ExpenseTracker.Models.SavingsPlan", b =>
                 {
-                    b.HasOne("expense_tracker.Models.User", "User")
+                    b.HasOne("ExpenseTracker.Models.User", "User")
                         .WithMany("SavingPlans")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -242,9 +242,9 @@ namespace expense_tracker.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("expense_tracker.Models.Transaction", b =>
+            modelBuilder.Entity("ExpenseTracker.Models.Transaction", b =>
                 {
-                    b.HasOne("expense_tracker.Models.TransactionGroup", "TransactionGroup")
+                    b.HasOne("ExpenseTracker.Models.TransactionGroup", "TransactionGroup")
                         .WithMany("Transactions")
                         .HasForeignKey("TransactionGroupId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -253,9 +253,9 @@ namespace expense_tracker.Migrations
                     b.Navigation("TransactionGroup");
                 });
 
-            modelBuilder.Entity("expense_tracker.Models.TransactionGroup", b =>
+            modelBuilder.Entity("ExpenseTracker.Models.TransactionGroup", b =>
                 {
-                    b.HasOne("expense_tracker.Models.User", "User")
+                    b.HasOne("ExpenseTracker.Models.User", "User")
                         .WithMany("TransactionGroups")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -264,14 +264,14 @@ namespace expense_tracker.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("expense_tracker.Models.TransactionGroup", b =>
+            modelBuilder.Entity("ExpenseTracker.Models.TransactionGroup", b =>
                 {
                     b.Navigation("Reminders");
 
                     b.Navigation("Transactions");
                 });
 
-            modelBuilder.Entity("expense_tracker.Models.User", b =>
+            modelBuilder.Entity("ExpenseTracker.Models.User", b =>
                 {
                     b.Navigation("SavingPlans");
 

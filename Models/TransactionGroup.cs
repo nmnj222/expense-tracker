@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace expense_tracker.Models
+namespace ExpenseTracker.Models
 {
     [Table("transaction_group")]
     public class TransactionGroup
