@@ -2,7 +2,7 @@
 {
     public enum ReminderFrequency
     {
-        Monthly,
-        Weekly
+        Monthly = 0,
+        Weekly = 1
     }
 }

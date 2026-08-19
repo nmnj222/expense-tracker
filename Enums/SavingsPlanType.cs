@@ -2,7 +2,7 @@
 {
     public enum SavingsPlanType
     {
-        FixedMonthly,
-        Flexible
+        FixedMonthly = 0,
+        Flexible = 1
     }
 }
