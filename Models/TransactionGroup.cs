@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using ExpenseTracker.Enums;
 
 namespace ExpenseTracker.Models
 {
