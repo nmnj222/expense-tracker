@@ -1,0 +1,64 @@
+﻿using ExpenseTracker.Data;
+using ExpenseTracker.Dtos;
+using ExpenseTracker.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+namespace ExpenseTracker.Services;
+
+public class UserService
+{
+    private readonly ApplicationDbContext _context;
+
+    public UserService(ApplicationDbContext context)
+    {
+        _context = context;
+    }
+
+    public async Task<IEnumerable<UserDto>> GetUsers()
+    {
+        return await _context.Users
+            .Select(u => UserToDto(u))
+            .ToListAsync();
+    }
+
+    public async Task<UserDto> CreateUser(CreateUserDto createUserDto)
+    {
+        User user = new(createUserDto.Username, createUserDto.Email, createUserDto.Password);
+
+        _context.Users.Add(user);
+        await _context.SaveChangesAsync();
+
+        return UserToDto(user);
+    }
+    
+    public async Task<UserDto?> UpdateUser(int id, UpdateUserDto updateUserDto)
+    {
+        User? user = await _context.Users.FindAsync(id);
+
+        if(user is null)
+        {
+            return null;
+        }
+
+        user.Username = updateUserDto.Username;
+        user.Email = updateUserDto.Email;
+        user.Name = updateUserDto.Name;
+        user.LastName = updateUserDto.LastName;
+        user.UpdatedAt = DateTime.UtcNow;
+
+        await _context.SaveChangesAsync();
+
+        return UserToDto(user);
+    }
+
+    private static UserDto UserToDto(User user) =>
+        new UserDto
+        {
+            Id = user.Id,
+            Name = user.Name,
+            LastName = user.LastName,
+            Username = user.Username,
+            CreatedAt = user.CreatedAt
+        };
+}
