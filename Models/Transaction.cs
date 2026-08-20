@@ -2,7 +2,6 @@
 
 namespace ExpenseTracker.Models;
 
-[Table("transaction")]
 public class Transaction
 {
     public int Id { get; set; }

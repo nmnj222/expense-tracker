@@ -3,7 +3,6 @@ using ExpenseTracker.Enums;
 
 namespace ExpenseTracker.Models;
 
-[Table("saving_plan")]
 public class SavingsPlan
 {
     public int Id { get; set; }
