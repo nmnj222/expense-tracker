@@ -2,6 +2,7 @@
 using ExpenseTracker.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace ExpenseTracker.Controllers;
 
@@ -19,11 +20,24 @@ public class UserController : ControllerBase
 
     //adjust return type mapping
 
-    [HttpGet]
-    public async Task<ActionResult<UserDto>> GetUsers()
+    [HttpGet("get-me")]
+    public async Task<ActionResult<UserDto>> GetMe()
     {
-        var users = await _userService.GetUsers();
-        return Ok(users);
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if(userId == null)
+        {
+            return Unauthorized();
+        }
+
+        var user = await _userService.GetMe(int.Parse(userId));
+
+        if(user == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(user);
     }
 
     //adjus return type mapping

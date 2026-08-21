@@ -15,11 +15,14 @@ public class UserService
         _context = context;
     }
 
-    public async Task<IEnumerable<UserDto>> GetUsers()
+    public async Task<UserDto> GetMe(int Id)
     {
-        return await _context.Users
+        var user = await _context.Users
+            .Where(u => u.Id == Id)
             .Select(u => UserToDto(u))
-            .ToListAsync();
+            .FirstOrDefaultAsync();
+
+        return user;
     }
 
     public async Task<UserDto> CreateUser(CreateUserDto createUserDto)
