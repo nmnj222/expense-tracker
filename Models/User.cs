@@ -29,7 +29,7 @@ public class User
 
     public List<SavingsPlan> SavingPlans { get; set; } = new();
 
-    private User() { }
+    public User() { }
 
     public User(string username, string email, string passwordHash)
     {

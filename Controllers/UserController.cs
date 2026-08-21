@@ -15,6 +15,8 @@ public class UserController : ControllerBase
         _userService = userService;
     }
 
+    //adjust return type mapping
+
     [HttpGet]
     public async Task<ActionResult<UserDto>> GetUsers()
     {
@@ -22,6 +24,7 @@ public class UserController : ControllerBase
         return Ok(users);
     }
 
+    //adjus return type mapping
     [HttpPost]
     public async Task<ActionResult<UserDto>> CreateUser(CreateUserDto createUserDto)
     {
@@ -30,6 +33,8 @@ public class UserController : ControllerBase
         return Ok(user);
     }
 
+
+    //adjus return type mapping
     [HttpPatch("{id}")]
     public async Task<ActionResult<UserDto>> UpdateUser([FromRoute] int id, [FromBody] UpdateUserDto updateUserDto)
     {
