@@ -24,16 +24,6 @@ public class UserService
 
         return user;
     }
-
-    public async Task<UserDto> CreateUser(CreateUserDto createUserDto)
-    {
-        User user = new(createUserDto.Username, createUserDto.Email, createUserDto.Password);
-
-        _context.Users.Add(user);
-        await _context.SaveChangesAsync();
-
-        return UserToDto(user);
-    }
     
     public async Task<UserDto?> UpdateUser(int id, UpdateUserDto updateUserDto)
     {

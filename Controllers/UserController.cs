@@ -41,15 +41,6 @@ public class UserController : ControllerBase
         return Ok(user);
     }
 
-    [HttpPost("me")]
-    public async Task<ActionResult<UserDto>> CreateUser(CreateUserDto createUserDto)
-    {
-        var user = await _userService.CreateUser(createUserDto);
-
-        return Ok(user);
-    }
-
-
     [HttpPatch("me")]
     public async Task<ActionResult<UserDto>> UpdateUser([FromBody] UpdateUserDto updateUserDto)
     {
