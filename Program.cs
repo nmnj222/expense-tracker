@@ -52,12 +52,13 @@ builder.Services.AddOpenApi(options =>
         return Task.CompletedTask;
     });
 });
-
+//Infra
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
         options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Services.AddScoped<UserService>();
 
+
+//Auth
 builder.Services.AddAuthentication("Bearer").AddJwtBearer("Bearer", options =>
 {
     options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
@@ -75,9 +76,12 @@ builder.Services.AddAuthentication("Bearer").AddJwtBearer("Bearer", options =>
     };
 });
 builder.Services.AddAuthorization();
+
+//App services
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<TransactionGroupService>();
 
 
 var app = builder.Build();

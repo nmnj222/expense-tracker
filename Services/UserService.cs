@@ -15,10 +15,10 @@ public class UserService
         _context = context;
     }
 
-    public async Task<UserDto> GetMe(int Id)
+    public async Task<UserDto?> GetMe(int id)
     {
         var user = await _context.Users
-            .Where(u => u.Id == Id)
+            .Where(u => u.Id == id)
             .Select(u => UserToDto(u))
             .FirstOrDefaultAsync();
 

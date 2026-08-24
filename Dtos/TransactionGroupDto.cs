@@ -2,7 +2,7 @@
 
 namespace ExpenseTracker.Dtos
 {
-    public class TransanctionGroupDto
+    public class TransactionGroupDto
     {
         public int Id { get; set; }
         public string Name { get; set; }
