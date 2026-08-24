@@ -1,4 +1,5 @@
 ﻿using ExpenseTracker.Dtos;
+using ExpenseTracker.Models;
 using ExpenseTracker.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,7 +21,7 @@ public class UserController : ControllerBase
 
     //adjust return type mapping
 
-    [HttpGet("get-me")]
+    [HttpGet("me")]
     public async Task<ActionResult<UserDto>> GetMe()
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -40,8 +41,7 @@ public class UserController : ControllerBase
         return Ok(user);
     }
 
-    //adjus return type mapping
-    [HttpPost]
+    [HttpPost("me")]
     public async Task<ActionResult<UserDto>> CreateUser(CreateUserDto createUserDto)
     {
         var user = await _userService.CreateUser(createUserDto);
@@ -50,16 +50,23 @@ public class UserController : ControllerBase
     }
 
 
-    //adjus return type mapping
-    [HttpPatch("{id}")]
-    public async Task<ActionResult<UserDto>> UpdateUser([FromRoute] int id, [FromBody] UpdateUserDto updateUserDto)
+    [HttpPatch("me")]
+    public async Task<ActionResult<UserDto>> UpdateUser([FromBody] UpdateUserDto updateUserDto)
     {
-        UserDto? user = await _userService.UpdateUser(id, updateUserDto);
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        if(user is null)
+        if (userId == null)
+        {
+            return Unauthorized();
+        }
+
+        var user = await _userService.UpdateUser(int.Parse(userId), updateUserDto);
+
+        if (user == null)
         {
             return NotFound();
         }
+
         return Ok(user);
     }
 }
