@@ -23,4 +23,6 @@ public class TransactionGroup
 
     public List<Transaction> Transactions { get; set; } = new();
     public List<Reminder> Reminders { get; set; } = new();
+
+    public TransactionGroup() { }
 }
