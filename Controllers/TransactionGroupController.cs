@@ -59,14 +59,14 @@ public class TransactionGroupController : ControllerBase
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        if(userId == null)
+        if (userId == null)
         {
             return Unauthorized();
         }
 
         var transactionGroup = await _transactionGroupService.CreateTransactionGroup(int.Parse(userId), createDto);
 
-        if(transactionGroup == null)
+        if (transactionGroup == null)
         {
             return BadRequest();
         }
@@ -79,7 +79,7 @@ public class TransactionGroupController : ControllerBase
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        if(userId is null)
+        if (userId is null)
         {
             return Unauthorized();
         }

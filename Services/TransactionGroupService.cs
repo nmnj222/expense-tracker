@@ -63,7 +63,7 @@ namespace ExpenseTracker.Services
             var transactionGroup = await _context.TransactionGroups
                 .FirstOrDefaultAsync(t => t.UserId == userId && t.Id == transactionGroupId);
 
-            if(transactionGroup is null)
+            if (transactionGroup is null)
             {
                 return false;
             }

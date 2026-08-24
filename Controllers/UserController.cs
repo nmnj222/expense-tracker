@@ -26,14 +26,14 @@ public class UserController : ControllerBase
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        if(userId == null)
+        if (userId == null)
         {
             return Unauthorized();
         }
 
         var user = await _userService.GetMe(int.Parse(userId));
 
-        if(user == null)
+        if (user == null)
         {
             return NotFound();
         }
