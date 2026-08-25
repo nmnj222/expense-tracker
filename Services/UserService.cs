@@ -4,27 +4,34 @@ using ExpenseTracker.Mappers;
 using ExpenseTracker.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ExpenseTracker.Common.Results;
+using ExpenseTracker.Common.Results.Errors;
 
 namespace ExpenseTracker.Services;
 
 public class UserService(ApplicationDbContext _context)
 {
 
-    public async Task<UserDto?> GetMe(int Id)
+    public async Task<Result<UserDto>> GetMe(int Id)
     {
         var user = await _context.Users
             .FirstOrDefaultAsync(u => u.Id == Id);
 
-        return user == null ? null : UserMapper.ToDto(user);
+        if (user is null)
+        {
+            return Result<UserDto>.Failure(UserErrors.NotFound(Id));
+        }
+
+        return Result<UserDto>.Success(UserMapper.ToDto(user));
     }
 
-    public async Task<UserDto?> UpdateUser(int id, UpdateUserDto updateUserDto)
+    public async Task<Result<UserDto>> UpdateUser(int id, UpdateUserDto updateUserDto)
     {
         User? user = await _context.Users.FindAsync(id);
 
         if (user is null)
         {
-            return null;
+            return Result<UserDto>.Failure(UserErrors.NotFound(id));
         }
 
         user.Username = updateUserDto.Username;
@@ -35,6 +42,6 @@ public class UserService(ApplicationDbContext _context)
 
         await _context.SaveChangesAsync();
 
-        return UserMapper.ToDto(user);
+        return Result<UserDto>.Success(UserMapper.ToDto(user));
     }
 }

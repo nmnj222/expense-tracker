@@ -19,19 +19,19 @@ public class UserController(UserService _userService) : ControllerBase
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        if(userId == null)
+        if (userId == null)
         {
             return Unauthorized();
         }
 
-        var user = await _userService.GetMe(int.Parse(userId));
+        var result = await _userService.GetMe(int.Parse(userId));
 
-        if(user == null)
+        if (result.IsFailure)
         {
-            return NotFound();
+            return NotFound(result.Error);
         }
 
-        return Ok(user);
+        return Ok(result.Value);
     }
 
     [HttpPatch("me")]
@@ -44,13 +44,13 @@ public class UserController(UserService _userService) : ControllerBase
             return Unauthorized();
         }
 
-        var user = await _userService.UpdateUser(int.Parse(userId), updateUserDto);
+        var result = await _userService.UpdateUser(int.Parse(userId), updateUserDto);
 
-        if (user == null)
+        if (result.IsFailure)
         {
-            return NotFound();
+            return NotFound(result.Error);
         }
 
-        return Ok(user);
+        return Ok(result.Value);
     }
 }

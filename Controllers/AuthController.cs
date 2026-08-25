@@ -1,4 +1,5 @@
-﻿using ExpenseTracker.Dtos;
+﻿using ExpenseTracker.Common.Results;
+using ExpenseTracker.Dtos;
 using ExpenseTracker.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,16 +11,19 @@ public class AuthController(AuthService _authService) : ControllerBase
 {
 
     [HttpPost("register")]
-    public async Task<ActionResult<AuthResponseDto>> Register (RegisterDto registerDto)
+    public async Task<ActionResult<AuthResponseDto>> Register(RegisterDto registerDto)
     {
         var result = await _authService.Register(registerDto);
 
-        if (!result.Success)
+        if (result.IsFailure)
         {
-            return BadRequest(result.Message);
+            return result.Error!.Type switch
+            {
+                ErrorType.Conflict => Conflict(result.Error),
+                _ => StatusCode(500, result.Error)
+            };
         }
-
-        return Ok(result);
+        return Ok(result.Value);
     }
 
     [HttpPost("login")]
@@ -27,11 +31,15 @@ public class AuthController(AuthService _authService) : ControllerBase
     {
         var result = await _authService.Login(loginDto);
 
-        if (!result.Success)
+        if (result.IsFailure)
         {
-            return Unauthorized(result.Message);
+            return result.Error.Type switch
+            {
+                ErrorType.Unauthorized => Unauthorized(result.Error),
+                _ => StatusCode(500, result.Error)
+            };
         }
 
-        return Ok(result);
+        return Ok(result.Value);
     }
 }
