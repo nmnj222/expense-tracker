@@ -13,13 +13,13 @@ public class User
     public string? LastName { get; set; }
 
     [Column(TypeName = "varchar(200)")]
-    public required string Username { get; set; }
+    public string Username { get; set; }
 
     [Column(TypeName = "varchar(200)")]
-    public required string Password { get; set; }
+    public string Password { get; set; }
 
     [Column(TypeName = "varchar(200)")]
-    public required string Email { get; set; }
+    public string Email { get; set; }
     public bool IsPremium { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; }
@@ -28,6 +28,15 @@ public class User
     public List<TransactionGroup> TransactionGroups { get; set; } = new();
 
     public List<SavingsPlan> SavingPlans { get; set; } = new();
+
+    public User() { }
+
+    public User(string username, string email, string passwordHash)
+    {
+        Username = username;
+        Email = email;
+        Password = passwordHash;
+    }
 
 }
 
