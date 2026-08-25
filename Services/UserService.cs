@@ -9,14 +9,12 @@ namespace ExpenseTracker.Services;
 public class UserService(ApplicationDbContext _context)
 {
 
-    public async Task<UserDto> GetMe(int Id)
+    public async Task<UserDto?> GetMe(int Id)
     {
         var user = await _context.Users
-            .Where(u => u.Id == Id)
-            .Select(u => UserToDto(u))
-            .FirstOrDefaultAsync();
+            .FirstOrDefaultAsync(u => u.Id == Id);
 
-        return user;
+        return user == null ? null : UserToDto(user);
     }
     
     public async Task<UserDto?> UpdateUser(int id, UpdateUserDto updateUserDto)
