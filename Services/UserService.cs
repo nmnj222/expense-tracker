@@ -1,5 +1,6 @@
 ﻿using ExpenseTracker.Data;
 using ExpenseTracker.Dtos;
+using ExpenseTracker.Mappers;
 using ExpenseTracker.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,14 +15,14 @@ public class UserService(ApplicationDbContext _context)
         var user = await _context.Users
             .FirstOrDefaultAsync(u => u.Id == Id);
 
-        return user == null ? null : UserToDto(user);
+        return user == null ? null : UserMapper.ToDto(user);
     }
-    
+
     public async Task<UserDto?> UpdateUser(int id, UpdateUserDto updateUserDto)
     {
         User? user = await _context.Users.FindAsync(id);
 
-        if(user is null)
+        if (user is null)
         {
             return null;
         }
@@ -34,16 +35,6 @@ public class UserService(ApplicationDbContext _context)
 
         await _context.SaveChangesAsync();
 
-        return UserToDto(user);
+        return UserMapper.ToDto(user);
     }
-
-    private static UserDto UserToDto(User user) =>
-        new UserDto
-        {
-            Id = user.Id,
-            Name = user.Name,
-            LastName = user.LastName,
-            Username = user.Username,
-            CreatedAt = user.CreatedAt
-        };
 }
