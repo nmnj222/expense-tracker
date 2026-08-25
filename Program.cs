@@ -1,4 +1,5 @@
 using ExpenseTracker.Data;
+using ExpenseTracker.Interfaces;
 using ExpenseTracker.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -78,6 +79,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 
 
 var app = builder.Build();

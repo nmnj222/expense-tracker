@@ -1,12 +1,13 @@
 ﻿using ExpenseTracker.Data;
 using ExpenseTracker.Dtos;
+using ExpenseTracker.Interfaces;
 using ExpenseTracker.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client.NativeInterop;
 
 namespace ExpenseTracker.Services;
 
-public class AuthService(ApplicationDbContext _context, TokenService _tokenService)
+public class AuthService(ApplicationDbContext _context, TokenService _tokenService, IPasswordHasher _passwordHasher)
 {
 
     public async Task<AuthResponseDto> Register(RegisterDto registerDto)
@@ -25,7 +26,7 @@ public class AuthService(ApplicationDbContext _context, TokenService _tokenServi
         var user = new User
         {
             Username = registerDto.Username,
-            Password = BCrypt.Net.BCrypt.HashPassword(registerDto.Password),
+            Password = _passwordHasher.Hash(registerDto.Password),
             Email = registerDto.Email
         };
 
@@ -52,7 +53,7 @@ public class AuthService(ApplicationDbContext _context, TokenService _tokenServi
             };
         }
 
-        var passwordValid = BCrypt.Net.BCrypt.Verify(
+        var passwordValid = _passwordHasher.Verify(
             loginDto.Password,
             user.Password
             );
