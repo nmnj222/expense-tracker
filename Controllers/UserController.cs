@@ -10,15 +10,8 @@ namespace ExpenseTracker.Controllers;
 [Authorize]
 [Route("api/[controller]")]
 [ApiController]
-public class UserController : ControllerBase
+public class UserController(UserService _userService) : ControllerBase
 {
-    private readonly UserService _userService;
-
-    public UserController(UserService userService)
-    {
-        _userService = userService;
-    }
-
     //adjust return type mapping
 
     [HttpGet("me")]
@@ -31,14 +24,14 @@ public class UserController : ControllerBase
             return Unauthorized();
         }
 
-        var user = await _userService.GetMe(int.Parse(userId));
+        var result = await _userService.GetMe(int.Parse(userId));
 
-        if (user == null)
+        if (result.IsFailure)
         {
-            return NotFound();
+            return NotFound(result.Error);
         }
 
-        return Ok(user);
+        return Ok(result.Value);
     }
 
     [HttpPatch("me")]
@@ -51,13 +44,13 @@ public class UserController : ControllerBase
             return Unauthorized();
         }
 
-        var user = await _userService.UpdateUser(int.Parse(userId), updateUserDto);
+        var result = await _userService.UpdateUser(int.Parse(userId), updateUserDto);
 
-        if (user == null)
+        if (result.IsFailure)
         {
-            return NotFound();
+            return NotFound(result.Error);
         }
 
-        return Ok(user);
+        return Ok(result.Value);
     }
 }

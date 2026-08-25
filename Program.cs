@@ -1,4 +1,7 @@
 using ExpenseTracker.Data;
+using ExpenseTracker.Interfaces;
+using ExpenseTracker.Services;
+using Microsoft.AspNetCore.Authorization;
 using ExpenseTracker.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -56,9 +59,8 @@ builder.Services.AddOpenApi(options =>
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
         options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddScoped<UserService>();
 
-
-//Auth
 builder.Services.AddAuthentication("Bearer").AddJwtBearer("Bearer", options =>
 {
     options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
@@ -76,13 +78,11 @@ builder.Services.AddAuthentication("Bearer").AddJwtBearer("Bearer", options =>
     };
 });
 builder.Services.AddAuthorization();
-
-//App services
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<TransactionGroupService>();
-
+builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 
 var app = builder.Build();
 

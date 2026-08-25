@@ -6,25 +6,17 @@ using System.Text;
 
 namespace ExpenseTracker.Services;
 
-public class TokenService
+public class TokenService(IConfiguration config)
 {
 
-    public readonly IConfiguration _config;
-    private readonly string _secretKey;
-    private readonly string _issuer;
-    private readonly string _audience;
-    private readonly int _accessTokenExpiryMinutes;
-
-    public TokenService(IConfiguration config)
-    {
-        _config = config;
-        _secretKey = config["ApiSettings:Secret"];
-        _issuer = config["ApiSettings:Issuer"]!;
-        _audience = config["ApiSettings:Audience"]!;
-        _accessTokenExpiryMinutes =
+    public readonly IConfiguration _config = config;
+    private readonly string _secretKey = config["ApiSettings:Secret"];
+    private readonly string _issuer = config["ApiSettings:Issuer"]!;
+    private readonly string _audience = config["ApiSettings:Audience"]!;
+    private readonly int _accessTokenExpiryMinutes =
             config.GetValue<int>("ApiSettings:AccessTokenExpiryMinutes", 60);
 
-    }
+    
 
     public string GenerateToken(User user)
     {

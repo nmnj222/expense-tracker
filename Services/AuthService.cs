@@ -1,87 +1,73 @@
 ﻿using ExpenseTracker.Data;
 using ExpenseTracker.Dtos;
+using ExpenseTracker.Interfaces;
 using ExpenseTracker.Models;
 using Microsoft.EntityFrameworkCore;
+using ExpenseTracker.Common.Results;
+using ExpenseTracker.Common.Results.Errors;
+
 using Microsoft.Identity.Client.NativeInterop;
 
 namespace ExpenseTracker.Services;
 
-public class AuthService
+public class AuthService(ApplicationDbContext _context, TokenService _tokenService, IPasswordHasher _passwordHasher)
 {
 
-    private readonly ApplicationDbContext _context;
-    private readonly TokenService _tokenService;
-
-    public AuthService(ApplicationDbContext context, TokenService tokenService)
-    {
-        _context = context;
-        _tokenService = tokenService;
-    }
-
-    public async Task<AuthResponseDto> Register(RegisterDto registerDto)
+    public async Task<Result<AuthResponseDto>> Register(RegisterDto registerDto)
     {
         var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Username == registerDto.Username);
 
-        if (existingUser != null)
+        if (existingUser is not null)
         {
-            return new AuthResponseDto
-            {
-                Success = false,
-                Message = "Username already exists."
-            };
+            return Result<AuthResponseDto>.Failure(AuthErrors.UsernameAlreadyExists);
         }
 
         var user = new User
         {
             Username = registerDto.Username,
-            Password = BCrypt.Net.BCrypt.HashPassword(registerDto.Password),
+            Password = _passwordHasher.Hash(registerDto.Password),
             Email = registerDto.Email
         };
 
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
 
-        return new AuthResponseDto
+        var response = new AuthResponseDto
         {
             Success = true,
             Message = "Registration successful."
         };
+
+        return Result<AuthResponseDto>.Success(response);
     }
 
-    public async Task<AuthResponseDto> Login(LoginRequestDto loginDto)
+    public async Task<Result<AuthResponseDto>> Login(LoginRequestDto loginDto)
     {
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == loginDto.Username);
 
-        if (user == null)
+        if (user is null)
         {
-            return new AuthResponseDto
-            {
-                Success = false,
-                Message = "Invalid username or password."
-            };
+            return Result<AuthResponseDto>.Failure(AuthErrors.InvalidCredentials);
         }
 
-        var passwordValid = BCrypt.Net.BCrypt.Verify(
+        var passwordValid = _passwordHasher.Verify(
             loginDto.Password,
             user.Password
             );
 
         if (!passwordValid)
         {
-            return new AuthResponseDto
-            {
-                Success = false,
-                Message = "Invalid username or password."
-            };
+            return Result<AuthResponseDto>.Failure(AuthErrors.InvalidCredentials);
         }
 
         var token = _tokenService.GenerateToken(user);
 
-        return new AuthResponseDto
+        var result = new AuthResponseDto
         {
-            Success = true,
-            Message = "Login successful.",
+            Message = "Login Successful",
             Token = token
         };
+
+        return Result<AuthResponseDto>.Success(result);
     }
 }

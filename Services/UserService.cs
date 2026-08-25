@@ -1,37 +1,36 @@
 ﻿using ExpenseTracker.Data;
 using ExpenseTracker.Dtos;
+using ExpenseTracker.Mappers;
 using ExpenseTracker.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ExpenseTracker.Common.Results;
+using ExpenseTracker.Common.Results.Errors;
 
 namespace ExpenseTracker.Services;
 
-public class UserService
+public class UserService(ApplicationDbContext _context)
 {
-    private readonly ApplicationDbContext _context;
-
-    public UserService(ApplicationDbContext context)
-    {
-        _context = context;
-    }
-
-    public async Task<UserDto?> GetMe(int id)
+    public async Task<Result<UserDto>> GetMe(int Id)
     {
         var user = await _context.Users
-            .Where(u => u.Id == id)
-            .Select(u => UserToDto(u))
-            .FirstOrDefaultAsync();
+            .FirstOrDefaultAsync(u => u.Id == Id);
 
-        return user;
+        if (user is null)
+        {
+            return Result<UserDto>.Failure(UserErrors.NotFound(Id));
+        }
+
+        return Result<UserDto>.Success(UserMapper.ToDto(user));
     }
-    
-    public async Task<UserDto?> UpdateUser(int id, UpdateUserDto updateUserDto)
+
+    public async Task<Result<UserDto>> UpdateUser(int id, UpdateUserDto updateUserDto)
     {
         User? user = await _context.Users.FindAsync(id);
 
-        if(user is null)
+        if (user is null)
         {
-            return null;
+            return Result<UserDto>.Failure(UserErrors.NotFound(id));
         }
 
         user.Username = updateUserDto.Username;
@@ -42,7 +41,7 @@ public class UserService
 
         await _context.SaveChangesAsync();
 
-        return UserToDto(user);
+        return Result<UserDto>.Success(UserMapper.ToDto(user));
     }
 
     private static UserDto UserToDto(User user) =>
