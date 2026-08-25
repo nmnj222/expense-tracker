@@ -6,17 +6,8 @@ using Microsoft.Identity.Client.NativeInterop;
 
 namespace ExpenseTracker.Services;
 
-public class AuthService
+public class AuthService(ApplicationDbContext _context, TokenService _tokenService)
 {
-
-    private readonly ApplicationDbContext _context;
-    private readonly TokenService _tokenService;
-
-    public AuthService(ApplicationDbContext context, TokenService tokenService)
-    {
-        _context = context;
-        _tokenService = tokenService;
-    }
 
     public async Task<AuthResponseDto> Register(RegisterDto registerDto)
     {

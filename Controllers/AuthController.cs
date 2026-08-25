@@ -6,15 +6,8 @@ namespace ExpenseTracker.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AuthController : ControllerBase
+public class AuthController(AuthService _authService) : ControllerBase
 {
-
-    private readonly AuthService _authService;
-
-    public AuthController(AuthService authService)
-    {
-        _authService = authService;
-    }
 
     [HttpPost("register")]
     public async Task<ActionResult<AuthResponseDto>> Register (RegisterDto registerDto)

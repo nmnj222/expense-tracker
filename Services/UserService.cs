@@ -6,14 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ExpenseTracker.Services;
 
-public class UserService
+public class UserService(ApplicationDbContext _context)
 {
-    private readonly ApplicationDbContext _context;
-
-    public UserService(ApplicationDbContext context)
-    {
-        _context = context;
-    }
 
     public async Task<UserDto> GetMe(int Id)
     {

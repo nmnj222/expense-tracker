@@ -10,15 +10,8 @@ namespace ExpenseTracker.Controllers;
 [Authorize]
 [Route("api/[controller]")]
 [ApiController]
-public class UserController : ControllerBase
+public class UserController(UserService _userService) : ControllerBase
 {
-    private readonly UserService _userService;
-
-    public UserController(UserService userService)
-    {
-        _userService = userService;
-    }
-
     //adjust return type mapping
 
     [HttpGet("me")]
