@@ -29,9 +29,9 @@ public class TransactionGroupController : ControllerBase
             return Unauthorized();
         }
 
-        var transactionGroups = await _transactionGroupService.GetUserTransactionGroups(int.Parse(userId));
+        var result = await _transactionGroupService.GetUserTransactionGroups(int.Parse(userId));
 
-        return Ok(transactionGroups);
+        return Ok(result.Value);
     }
 
     [HttpGet("{transactionGroupId}")]
@@ -44,14 +44,14 @@ public class TransactionGroupController : ControllerBase
             return Unauthorized();
         }
 
-        var transactionGroup = await _transactionGroupService.GetUserTransactionGroupDetails(int.Parse(userId), transactionGroupId);
+        var result = await _transactionGroupService.GetUserTransactionGroupDetails(int.Parse(userId), transactionGroupId);
 
-        if (transactionGroup == null)
+        if (result.IsFailure)
         {
-            return NotFound();
+            return NotFound(result.Error);
         }
 
-        return Ok(transactionGroup);
+        return Ok(result.Value);
     }
 
     [HttpPost]
@@ -64,14 +64,14 @@ public class TransactionGroupController : ControllerBase
             return Unauthorized();
         }
 
-        var transactionGroup = await _transactionGroupService.CreateTransactionGroup(int.Parse(userId), createDto);
+        var result = await _transactionGroupService.CreateTransactionGroup(int.Parse(userId), createDto);
 
-        if (transactionGroup == null)
+        if (result == null)
         {
             return BadRequest();
         }
 
-        return Ok(transactionGroup);
+        return Ok(result.Value);
     }
 
     [HttpDelete("{transactionGroupId}")]
@@ -84,11 +84,11 @@ public class TransactionGroupController : ControllerBase
             return Unauthorized();
         }
 
-        var deleted = await _transactionGroupService.DeleteTransactionGroup(int.Parse(userId), transactionGroupId);
+        var result = await _transactionGroupService.DeleteTransactionGroup(int.Parse(userId), transactionGroupId);
 
-        if (!deleted)
+        if (result.IsFailure)
         {
-            return NotFound();
+            return NotFound(result.Error);
         }
 
         return NoContent();

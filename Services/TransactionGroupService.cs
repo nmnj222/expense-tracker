@@ -1,4 +1,6 @@
-﻿using ExpenseTracker.Data;
+﻿using ExpenseTracker.Common.Results;
+using ExpenseTracker.Common.Results.Errors;
+using ExpenseTracker.Data;
 using ExpenseTracker.Dtos;
 using ExpenseTracker.Mappers;
 using ExpenseTracker.Models;
@@ -10,19 +12,19 @@ namespace ExpenseTracker.Services;
 public class TransactionGroupService(ApplicationDbContext _context)
 {
 
-    public async Task<List<TransactionGroupDto>> GetUserTransactionGroups(int userId)
+    public async Task<Result<List<TransactionGroupDto>>> GetUserTransactionGroups(int userId)
     {
-        var transactionGroups = await _context.TransactionGroups
+        var transactionGroupsRaw = await _context.TransactionGroups
             .Where(t => t.UserId == userId)
             .ToListAsync();
 
-
-
-        return transactionGroups.Select(t => TransactionGroupMapper.ToDto(t))
+        var transactionGroups = transactionGroupsRaw.Select(t => TransactionGroupMapper.ToDto(t))
         .ToList();
+
+        return Result<List<TransactionGroupDto>>.Success(transactionGroups);
     }
 
-    public async Task<TransactionGroupDetailsDto?> GetUserTransactionGroupDetails(int userId, int transactionGroupId)
+    public async Task<Result<TransactionGroupDetailsDto>> GetUserTransactionGroupDetails(int userId, int transactionGroupId)
     {
         var transactionGroup = await _context.TransactionGroups
             .Where(t => t.UserId == userId && t.Id == transactionGroupId)
@@ -30,13 +32,13 @@ public class TransactionGroupService(ApplicationDbContext _context)
 
         if (transactionGroup is null)
         {
-            return null;
+            return Result<TransactionGroupDetailsDto>.Failure(TransactionGroupErrors.NotFound(transactionGroupId));
         }
 
-        return TransactionGroupMapper.toDetailsDto(transactionGroup);
+        return Result<TransactionGroupDetailsDto>.Success(TransactionGroupMapper.toDetailsDto(transactionGroup));
     }
 
-    public async Task<TransactionGroupDto> CreateTransactionGroup(int userId, CreateTransactionGroupDto createDto)
+    public async Task<Result<TransactionGroupDto>> CreateTransactionGroup(int userId, CreateTransactionGroupDto createDto)
     {
         TransactionGroup transactionGroup = new TransactionGroup
         {
@@ -49,23 +51,22 @@ public class TransactionGroupService(ApplicationDbContext _context)
         _context.TransactionGroups.Add(transactionGroup);
         await _context.SaveChangesAsync();
 
-        return TransactionGroupMapper.ToDto(transactionGroup);
+        return Result<TransactionGroupDto>.Success(TransactionGroupMapper.ToDto(transactionGroup));
     }
-
-    public async Task<bool> DeleteTransactionGroup(int userId, int transactionGroupId)
+    public async Task<Result<bool>> DeleteTransactionGroup(int userId, int transactionGroupId)
     {
         var transactionGroup = await _context.TransactionGroups
             .FirstOrDefaultAsync(t => t.UserId == userId && t.Id == transactionGroupId);
 
         if (transactionGroup is null)
         {
-            return false;
+            return Result<bool>.Failure(TransactionGroupErrors.NotFound(transactionGroupId));
         }
 
         _context.TransactionGroups.Remove(transactionGroup);
 
         await _context.SaveChangesAsync();
 
-        return true;
+        return Result<bool>.Success(true);
     }
 }
