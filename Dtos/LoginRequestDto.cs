@@ -1,8 +1,12 @@
-﻿namespace ExpenseTracker.Dtos;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ExpenseTracker.Dtos;
 
 public class LoginRequestDto
 {
+    [Required(AllowEmptyStrings = false, ErrorMessage = "Username is required")]
+    public required string Username { get; set; }
 
-    public string? Username { get; set; }
-    public string? Password { get; set; }
+    [Required(AllowEmptyStrings = false, ErrorMessage = "Password is required")]
+    public required string Password { get; set; }
 }

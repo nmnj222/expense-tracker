@@ -2,8 +2,6 @@ using ExpenseTracker.Data;
 using ExpenseTracker.Interfaces;
 using ExpenseTracker.Services;
 using Microsoft.AspNetCore.Authorization;
-using ExpenseTracker.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
