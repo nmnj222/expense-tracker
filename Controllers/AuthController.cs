@@ -12,7 +12,7 @@ public class AuthController(AuthService _authService) : ControllerBase
     [HttpPost("register")]
     public async Task<ActionResult<AuthResponseDto>> Register(RegisterDto registerDto)
     {
-        var result = await _authService.Register(registerDto);
+        Result<AuthResponseDto> result = await _authService.Register(registerDto);
 
         if (result.IsFailure)
         {
@@ -28,7 +28,7 @@ public class AuthController(AuthService _authService) : ControllerBase
     [HttpPost("login")]
     public async Task<ActionResult<AuthResponseDto>> Login(LoginRequestDto loginDto)
     {
-        var result = await _authService.Login(loginDto);
+        Result<AuthResponseDto> result = await _authService.Login(loginDto);
 
         if (result.IsFailure)
         {

@@ -1,4 +1,5 @@
-﻿using ExpenseTracker.Dtos;
+﻿using ExpenseTracker.Common.Results;
+using ExpenseTracker.Dtos;
 using ExpenseTracker.Models;
 using ExpenseTracker.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -24,7 +25,7 @@ public class UserController(UserService _userService) : ControllerBase
             return Unauthorized();
         }
 
-        var result = await _userService.GetMe(int.Parse(userId));
+        Result<UserDto> result = await _userService.GetMe(int.Parse(userId));
 
         if (result.IsFailure)
         {
@@ -44,7 +45,7 @@ public class UserController(UserService _userService) : ControllerBase
             return Unauthorized();
         }
 
-        var result = await _userService.UpdateUser(int.Parse(userId), updateUserDto);
+        Result<UserDto> result = await _userService.UpdateUser(int.Parse(userId), updateUserDto);
 
         if (result.IsFailure)
         {

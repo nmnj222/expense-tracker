@@ -1,4 +1,5 @@
-﻿using ExpenseTracker.Dtos;
+﻿using ExpenseTracker.Common.Results;
+using ExpenseTracker.Dtos;
 using ExpenseTracker.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,16 +10,8 @@ namespace ExpenseTracker.Controllers;
 [Authorize]
 [Route("api/[controller]")]
 [ApiController]
-public class TransactionGroupController : ControllerBase
+public class TransactionGroupController(TransactionGroupService _transactionGroupService) : ControllerBase
 {
-
-    private readonly TransactionGroupService _transactionGroupService;
-
-    public TransactionGroupController(TransactionGroupService transactionGroupService)
-    {
-        _transactionGroupService = transactionGroupService;
-    }
-
     [HttpGet]
     public async Task<ActionResult<List<TransactionGroupDto>>> GetUserTransactionGroups()
     {
@@ -29,7 +22,7 @@ public class TransactionGroupController : ControllerBase
             return Unauthorized();
         }
 
-        var result = await _transactionGroupService.GetUserTransactionGroups(int.Parse(userId));
+        Result<List<TransactionGroupDto>> result = await _transactionGroupService.GetUserTransactionGroups(int.Parse(userId));
 
         return Ok(result.Value);
     }
@@ -44,7 +37,7 @@ public class TransactionGroupController : ControllerBase
             return Unauthorized();
         }
 
-        var result = await _transactionGroupService.GetUserTransactionGroupDetails(int.Parse(userId), transactionGroupId);
+        Result<TransactionGroupDetailsDto> result = await _transactionGroupService.GetUserTransactionGroupDetails(int.Parse(userId), transactionGroupId);
 
         if (result.IsFailure)
         {
@@ -64,7 +57,7 @@ public class TransactionGroupController : ControllerBase
             return Unauthorized();
         }
 
-        var result = await _transactionGroupService.CreateTransactionGroup(int.Parse(userId), createDto);
+        Result<TransactionGroupDto> result = await _transactionGroupService.CreateTransactionGroup(int.Parse(userId), createDto);
 
         if (result == null)
         {
