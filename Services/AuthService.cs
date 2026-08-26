@@ -6,8 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using ExpenseTracker.Common.Results;
 using ExpenseTracker.Common.Results.Errors;
 
-using Microsoft.Identity.Client.NativeInterop;
-
 namespace ExpenseTracker.Services;
 
 public class AuthService(ApplicationDbContext _context, TokenService _tokenService, IPasswordHasher _passwordHasher)

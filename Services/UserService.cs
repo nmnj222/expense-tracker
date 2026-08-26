@@ -43,14 +43,4 @@ public class UserService(ApplicationDbContext _context)
 
         return Result<UserDto>.Success(UserMapper.ToDto(user));
     }
-
-    private static UserDto UserToDto(User user) =>
-        new UserDto
-        {
-            Id = user.Id,
-            Name = user.Name,
-            LastName = user.LastName,
-            Username = user.Username,
-            CreatedAt = user.CreatedAt
-        };
 }
