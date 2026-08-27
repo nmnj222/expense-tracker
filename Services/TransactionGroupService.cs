@@ -35,7 +35,7 @@ public class TransactionGroupService(ApplicationDbContext _context) : ITransacti
             return Result<TransactionGroupDetailsDto>.Failure(TransactionGroupErrors.NotFound(transactionGroupId));
         }
 
-        return Result<TransactionGroupDetailsDto>.Success(TransactionGroupMapper.toDetailsDto(transactionGroup));
+        return Result<TransactionGroupDetailsDto>.Success(TransactionGroupMapper.ToDetailsDto(transactionGroup));
     }
 
     public async Task<Result<TransactionGroupDto>> CreateTransactionGroup(int userId, CreateTransactionGroupDto createDto)

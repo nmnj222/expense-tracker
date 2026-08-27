@@ -3,7 +3,7 @@ using ExpenseTracker.Models;
 
 namespace ExpenseTracker.Mappers;
 
-public class UserMapper
+public static class UserMapper
 {
     public static UserDto ToDto(User user) =>
     new UserDto
