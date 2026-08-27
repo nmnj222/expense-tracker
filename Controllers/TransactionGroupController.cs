@@ -22,9 +22,9 @@ public class TransactionGroupController(TransactionGroupService _transactionGrou
             return Unauthorized();
         }
 
-        Result<List<TransactionGroupDto>> result = await _transactionGroupService.GetUserTransactionGroups(int.Parse(userId));
+        Result<List<TransactionGroupDto>> transactionGroupResult = await _transactionGroupService.GetUserTransactionGroups(int.Parse(userId));
 
-        return Ok(result.Value);
+        return Ok(transactionGroupResult.Value);
     }
 
     [HttpGet("{transactionGroupId}")]
@@ -37,14 +37,14 @@ public class TransactionGroupController(TransactionGroupService _transactionGrou
             return Unauthorized();
         }
 
-        Result<TransactionGroupDetailsDto> result = await _transactionGroupService.GetUserTransactionGroupDetails(int.Parse(userId), transactionGroupId);
+        Result<TransactionGroupDetailsDto> transactionGroupDetailsResult = await _transactionGroupService.GetUserTransactionGroupDetails(int.Parse(userId), transactionGroupId);
 
-        if (result.IsFailure)
+        if (transactionGroupDetailsResult.IsFailure)
         {
-            return NotFound(result.Error);
+            return NotFound(transactionGroupDetailsResult.Error);
         }
 
-        return Ok(result.Value);
+        return Ok(transactionGroupDetailsResult.Value);
     }
 
     [HttpPost]
@@ -57,14 +57,14 @@ public class TransactionGroupController(TransactionGroupService _transactionGrou
             return Unauthorized();
         }
 
-        Result<TransactionGroupDto> result = await _transactionGroupService.CreateTransactionGroup(int.Parse(userId), createDto);
+        Result<TransactionGroupDto> createTransactionGroupResult = await _transactionGroupService.CreateTransactionGroup(int.Parse(userId), createDto);
 
-        if (result == null)
+        if (createTransactionGroupResult == null)
         {
             return BadRequest();
         }
 
-        return Ok(result.Value);
+        return Ok(createTransactionGroupResult.Value);
     }
 
     [HttpDelete("{transactionGroupId}")]

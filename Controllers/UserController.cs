@@ -25,14 +25,14 @@ public class UserController(UserService _userService) : ControllerBase
             return Unauthorized();
         }
 
-        Result<UserDto> result = await _userService.GetMe(int.Parse(userId));
+        Result<UserDto> getMeResult = await _userService.GetMe(int.Parse(userId));
 
-        if (result.IsFailure)
+        if (getMeResult.IsFailure)
         {
-            return NotFound(result.Error);
+            return NotFound(getMeResult.Error);
         }
 
-        return Ok(result.Value);
+        return Ok(getMeResult.Value);
     }
 
     [HttpPatch("me")]
@@ -45,13 +45,13 @@ public class UserController(UserService _userService) : ControllerBase
             return Unauthorized();
         }
 
-        Result<UserDto> result = await _userService.UpdateUser(int.Parse(userId), updateUserDto);
+        Result<UserDto> updateUserResult = await _userService.UpdateUser(int.Parse(userId), updateUserDto);
 
-        if (result.IsFailure)
+        if (updateUserResult.IsFailure)
         {
-            return NotFound(result.Error);
+            return NotFound(updateUserResult.Error);
         }
 
-        return Ok(result.Value);
+        return Ok(updateUserResult.Value);
     }
 }
