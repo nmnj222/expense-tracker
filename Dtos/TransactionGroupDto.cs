@@ -2,10 +2,10 @@
 
 namespace ExpenseTracker.Dtos
 {
-    public class TransactionGroupDto
+    public record TransactionGroupDto
     {
         public int Id { get; set; }
-        public string Name { get; set; }
+        public required string Name { get; set; }
         public TransactionType TransactionType { get; set; }
     }
 }

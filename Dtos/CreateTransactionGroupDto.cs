@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ExpenseTracker.Dtos
 {
-    public class CreateTransactionGroupDto
+    public record CreateTransactionGroupDto
     {
         [Required(AllowEmptyStrings = false, ErrorMessage = "Group name is required")]
         public required string Name { get; set; }

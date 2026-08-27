@@ -2,7 +2,6 @@
 using ExpenseTracker.Dtos;
 using ExpenseTracker.Mappers;
 using ExpenseTracker.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ExpenseTracker.Common.Results;
 using ExpenseTracker.Common.Results.Errors;

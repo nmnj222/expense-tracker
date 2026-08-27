@@ -2,7 +2,7 @@
 
 namespace ExpenseTracker.Dtos;
 
-public class LoginRequestDto
+public record LoginRequestDto
 {
     [Required(AllowEmptyStrings = false, ErrorMessage = "Username is required")]
     public required string Username { get; set; }

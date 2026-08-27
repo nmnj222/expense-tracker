@@ -2,7 +2,7 @@
 
 namespace ExpenseTracker.Dtos
 {
-    public class RegisterDto
+    public record RegisterDto
     {
         [Required(AllowEmptyStrings = false, ErrorMessage = "Email is required")]
         [MinLength(3)]
