@@ -1,10 +1,10 @@
 ﻿using ExpenseTracker.Common.Results;
 using ExpenseTracker.Dtos;
+using ExpenseTracker.Extensions;
 using ExpenseTracker.Models;
 using ExpenseTracker.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace ExpenseTracker.Controllers;
 
@@ -13,19 +13,13 @@ namespace ExpenseTracker.Controllers;
 [ApiController]
 public class UserController(UserService _userService) : ControllerBase
 {
-    //adjust return type mapping
 
     [HttpGet("me")]
     public async Task<ActionResult<UserDto>> GetMe()
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = User.GetUserId();
 
-        if (userId == null)
-        {
-            return Unauthorized();
-        }
-
-        Result<UserDto> getMeResult = await _userService.GetMe(int.Parse(userId));
+        Result<UserDto> getMeResult = await _userService.GetMe(userId);
 
         if (getMeResult.IsFailure)
         {
@@ -38,14 +32,9 @@ public class UserController(UserService _userService) : ControllerBase
     [HttpPatch("me")]
     public async Task<ActionResult<UserDto>> UpdateUser([FromBody] UpdateUserDto updateUserDto)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = User.GetUserId();
 
-        if (userId == null)
-        {
-            return Unauthorized();
-        }
-
-        Result<UserDto> updateUserResult = await _userService.UpdateUser(int.Parse(userId), updateUserDto);
+        Result<UserDto> updateUserResult = await _userService.UpdateUser(userId, updateUserDto);
 
         if (updateUserResult.IsFailure)
         {

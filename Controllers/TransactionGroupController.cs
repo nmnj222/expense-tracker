@@ -1,9 +1,9 @@
 ﻿using ExpenseTracker.Common.Results;
 using ExpenseTracker.Dtos;
+using ExpenseTracker.Extensions;
 using ExpenseTracker.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace ExpenseTracker.Controllers;
 
@@ -15,14 +15,9 @@ public class TransactionGroupController(TransactionGroupService _transactionGrou
     [HttpGet]
     public async Task<ActionResult<List<TransactionGroupDto>>> GetUserTransactionGroups()
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = User.GetUserId();
 
-        if (userId == null)
-        {
-            return Unauthorized();
-        }
-
-        Result<List<TransactionGroupDto>> transactionGroupResult = await _transactionGroupService.GetUserTransactionGroups(int.Parse(userId));
+        Result<List<TransactionGroupDto>> transactionGroupResult = await _transactionGroupService.GetUserTransactionGroups(userId);
 
         return Ok(transactionGroupResult.Value);
     }
@@ -30,14 +25,9 @@ public class TransactionGroupController(TransactionGroupService _transactionGrou
     [HttpGet("{transactionGroupId}")]
     public async Task<ActionResult<TransactionGroupDetailsDto?>> GetUserTransactionGroupDetails([FromRoute] int transactionGroupId)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = User.GetUserId();
 
-        if (userId == null)
-        {
-            return Unauthorized();
-        }
-
-        Result<TransactionGroupDetailsDto> transactionGroupDetailsResult = await _transactionGroupService.GetUserTransactionGroupDetails(int.Parse(userId), transactionGroupId);
+        Result<TransactionGroupDetailsDto> transactionGroupDetailsResult = await _transactionGroupService.GetUserTransactionGroupDetails(userId, transactionGroupId);
 
         if (transactionGroupDetailsResult.IsFailure)
         {
@@ -50,14 +40,9 @@ public class TransactionGroupController(TransactionGroupService _transactionGrou
     [HttpPost]
     public async Task<ActionResult<TransactionGroupDto>> CreateUserTransactionGroup([FromBody] CreateTransactionGroupDto createDto)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = User.GetUserId();
 
-        if (userId == null)
-        {
-            return Unauthorized();
-        }
-
-        Result<TransactionGroupDto> createTransactionGroupResult = await _transactionGroupService.CreateTransactionGroup(int.Parse(userId), createDto);
+        Result<TransactionGroupDto> createTransactionGroupResult = await _transactionGroupService.CreateTransactionGroup(userId, createDto);
 
         if (createTransactionGroupResult == null)
         {
@@ -70,14 +55,9 @@ public class TransactionGroupController(TransactionGroupService _transactionGrou
     [HttpDelete("{transactionGroupId}")]
     public async Task<IActionResult> DeleteTransactionGroup([FromRoute] int transactionGroupId)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = User.GetUserId();
 
-        if (userId is null)
-        {
-            return Unauthorized();
-        }
-
-        var result = await _transactionGroupService.DeleteTransactionGroup(int.Parse(userId), transactionGroupId);
+        var result = await _transactionGroupService.DeleteTransactionGroup(userId, transactionGroupId);
 
         if (result.IsFailure)
         {
