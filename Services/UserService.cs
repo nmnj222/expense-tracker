@@ -5,10 +5,11 @@ using ExpenseTracker.Models;
 using Microsoft.EntityFrameworkCore;
 using ExpenseTracker.Common.Results;
 using ExpenseTracker.Common.Results.Errors;
+using ExpenseTracker.Interfaces;
 
 namespace ExpenseTracker.Services;
 
-public class UserService(ApplicationDbContext _context)
+public class UserService(ApplicationDbContext _context) : IUserService
 {
     public async Task<Result<UserDto>> GetMe(int Id)
     {

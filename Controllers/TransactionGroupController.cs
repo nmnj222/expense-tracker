@@ -1,7 +1,7 @@
 ﻿using ExpenseTracker.Common.Results;
 using ExpenseTracker.Dtos;
 using ExpenseTracker.Extensions;
-using ExpenseTracker.Services;
+using ExpenseTracker.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,7 +10,7 @@ namespace ExpenseTracker.Controllers;
 [Authorize]
 [Route("api/[controller]")]
 [ApiController]
-public class TransactionGroupController(TransactionGroupService _transactionGroupService) : ControllerBase
+public class TransactionGroupController(ITransactionGroupService _transactionGroupService) : ControllerBase
 {
     [HttpGet]
     public async Task<ActionResult<List<TransactionGroupDto>>> GetUserTransactionGroups()

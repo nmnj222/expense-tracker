@@ -1,8 +1,7 @@
 ﻿using ExpenseTracker.Common.Results;
 using ExpenseTracker.Dtos;
 using ExpenseTracker.Extensions;
-using ExpenseTracker.Models;
-using ExpenseTracker.Services;
+using ExpenseTracker.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,7 +10,7 @@ namespace ExpenseTracker.Controllers;
 [Authorize]
 [Route("api/[controller]")]
 [ApiController]
-public class UserController(UserService _userService) : ControllerBase
+public class UserController(IUserService _userService) : ControllerBase
 {
 
     [HttpGet("me")]

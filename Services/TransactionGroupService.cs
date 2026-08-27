@@ -2,14 +2,14 @@
 using ExpenseTracker.Common.Results.Errors;
 using ExpenseTracker.Data;
 using ExpenseTracker.Dtos;
+using ExpenseTracker.Interfaces;
 using ExpenseTracker.Mappers;
 using ExpenseTracker.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace ExpenseTracker.Services;
 
-public class TransactionGroupService(ApplicationDbContext _context)
+public class TransactionGroupService(ApplicationDbContext _context) : ITransactionGroupService
 {
 
     public async Task<Result<List<TransactionGroupDto>>> GetUserTransactionGroups(int userId)

@@ -1,13 +1,13 @@
 ﻿using ExpenseTracker.Common.Results;
 using ExpenseTracker.Dtos;
-using ExpenseTracker.Services;
+using ExpenseTracker.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExpenseTracker.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AuthController(AuthService _authService) : ControllerBase
+public class AuthController(IAuthService _authService) : ControllerBase
 {
     [HttpPost("register")]
     public async Task<ActionResult<AuthResponseDto>> Register(RegisterDto registerDto)
