@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 namespace ExpenseTracker.Validators;
 
 [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
-public class IsGreaterThanZeroAttribute : ValidationAttribute
+public class GreaterThanZero : ValidationAttribute
 {
 
     protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
@@ -24,15 +24,10 @@ public class IsGreaterThanZeroAttribute : ValidationAttribute
             return false;
         }
 
-        if (!IsGreaterThanZero((int)value))
+        if ((int)value <= 0)
         {
             return false;
         }
         return true;
-    }
-
-    private static bool IsGreaterThanZero(int number)
-    {
-        return number > 0;
     }
 }

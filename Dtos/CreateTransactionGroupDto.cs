@@ -9,7 +9,7 @@ namespace ExpenseTracker.Dtos
         [Required(AllowEmptyStrings = false, ErrorMessage = "Group name is required")]
         public required string Name { get; set; }
 
-        [IsGreaterThanZero]
+        [GreaterThanZero]
         public int MonthlyCap { get; set; }
 
         [Required]
