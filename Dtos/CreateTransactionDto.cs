@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using ExpenseTracker.Validators;
+﻿using ExpenseTracker.Validators;
 namespace ExpenseTracker.Dtos;
 
 public record CreateTransactionDto

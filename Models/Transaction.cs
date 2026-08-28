@@ -8,9 +8,9 @@ public class Transaction
 
     public int Amount { get; set; }
 
-    public int TransactionGroupId { get; set; }
+    public required int TransactionGroupId { get; set; }
 
-    public required TransactionGroup TransactionGroup { get; set; }
+    public TransactionGroup TransactionGroup { get; set; } = null!;
 
     public bool IsScheduled { get; set; }
 
@@ -18,5 +18,7 @@ public class Transaction
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; }
+
+    public Transaction() { }
 }
 

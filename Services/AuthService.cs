@@ -62,6 +62,7 @@ public class AuthService(ApplicationDbContext _context, ITokenService _tokenServ
 
         var result = new AuthResponseDto
         {
+            Success = true,
             Message = "Login Successful",
             Token = token
         };
