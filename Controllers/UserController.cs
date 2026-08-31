@@ -1,56 +1,45 @@
-﻿using ExpenseTracker.Dtos;
-using ExpenseTracker.Models;
-using ExpenseTracker.Services;
+﻿using ExpenseTracker.Common.Results;
+using ExpenseTracker.Dtos;
+using ExpenseTracker.Extensions;
+using ExpenseTracker.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace ExpenseTracker.Controllers;
 
 [Authorize]
 [Route("api/[controller]")]
 [ApiController]
-public class UserController(UserService _userService) : ControllerBase
+public class UserController(IUserService _userService) : ControllerBase
 {
-    //adjust return type mapping
 
     [HttpGet("me")]
     public async Task<ActionResult<UserDto>> GetMe()
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = User.GetUserId();
 
-        if (userId == null)
+        Result<UserDto> getMeResult = await _userService.GetMe(userId);
+
+        if (getMeResult.IsFailure)
         {
-            return Unauthorized();
+            return NotFound(getMeResult.Error);
         }
 
-        var result = await _userService.GetMe(int.Parse(userId));
-
-        if (result.IsFailure)
-        {
-            return NotFound(result.Error);
-        }
-
-        return Ok(result.Value);
+        return Ok(getMeResult.Value);
     }
 
     [HttpPatch("me")]
     public async Task<ActionResult<UserDto>> UpdateUser([FromBody] UpdateUserDto updateUserDto)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = User.GetUserId();
 
-        if (userId == null)
+        Result<UserDto> updateUserResult = await _userService.UpdateUser(userId, updateUserDto);
+
+        if (updateUserResult.IsFailure)
         {
-            return Unauthorized();
+            return NotFound(updateUserResult.Error);
         }
 
-        var result = await _userService.UpdateUser(int.Parse(userId), updateUserDto);
-
-        if (result.IsFailure)
-        {
-            return NotFound(result.Error);
-        }
-
-        return Ok(result.Value);
+        return Ok(updateUserResult.Value);
     }
 }

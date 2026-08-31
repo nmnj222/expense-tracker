@@ -2,16 +2,15 @@
 using ExpenseTracker.Dtos;
 using ExpenseTracker.Mappers;
 using ExpenseTracker.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ExpenseTracker.Common.Results;
 using ExpenseTracker.Common.Results.Errors;
+using ExpenseTracker.Interfaces;
 
 namespace ExpenseTracker.Services;
 
-public class UserService(ApplicationDbContext _context)
+public class UserService(ApplicationDbContext _context) : IUserService
 {
-
     public async Task<Result<UserDto>> GetMe(int Id)
     {
         var user = await _context.Users

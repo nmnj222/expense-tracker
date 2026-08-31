@@ -1,11 +1,20 @@
-﻿namespace ExpenseTracker.Dtos
-{
-    public class RegisterDto
-    {
+﻿using System.ComponentModel.DataAnnotations;
 
-        public string? Username { get; set; }
-        public string? Email { get; set; }
-        public string? Password { get; set; }
+namespace ExpenseTracker.Dtos
+{
+    public record RegisterDto
+    {
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Email is required")]
+        [MinLength(3)]
+        public required string Username { get; set; }
+
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Username is required")]
+        [EmailAddress]
+        public required string Email { get; set; }
+
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Email is required")]
+        [MinLength(8)]
+        public required string Password { get; set; }
 
     }
 }

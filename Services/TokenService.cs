@@ -1,4 +1,5 @@
-﻿using ExpenseTracker.Models;
+﻿using ExpenseTracker.Interfaces;
+using ExpenseTracker.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -6,7 +7,7 @@ using System.Text;
 
 namespace ExpenseTracker.Services;
 
-public class TokenService(IConfiguration config)
+public class TokenService(IConfiguration config) : ITokenService
 {
 
     public readonly IConfiguration _config = config;
@@ -15,6 +16,8 @@ public class TokenService(IConfiguration config)
     private readonly string _audience = config["ApiSettings:Audience"]!;
     private readonly int _accessTokenExpiryMinutes =
             config.GetValue<int>("ApiSettings:AccessTokenExpiryMinutes", 60);
+
+    
 
     public string GenerateToken(User user)
     {
