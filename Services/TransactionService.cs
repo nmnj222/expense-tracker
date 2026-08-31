@@ -5,7 +5,9 @@ using ExpenseTracker.Dtos;
 using ExpenseTracker.Interfaces;
 using ExpenseTracker.Mappers;
 using ExpenseTracker.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration.UserSecrets;
 
 namespace ExpenseTracker.Services;
 
@@ -73,4 +75,59 @@ public class TransactionService(ApplicationDbContext _context) : ITransactionSer
 
         return Result<TransactionDto>.Success(TransactionMapper.ToDto(transaction));
     }
+
+    public async Task<Result<ScheduledTransactionDto>> CreateUserScheduledTransaction(int userId, CreateScheduledTransactionDto createScheduledDto)
+    {
+        var transactionGroup = await _context.TransactionGroups
+            .FirstOrDefaultAsync(tg => tg.Id == createScheduledDto.TransactionGroupId && tg.UserId == userId);
+
+        if (transactionGroup is null)
+        {
+            return Result<ScheduledTransactionDto>.Failure(TransactionGroupErrors.NotFound());
+        }
+
+        ScheduledTransaction scheduledTransaction = new ScheduledTransaction
+        {
+            Amount = createScheduledDto.Amount,
+            TransactionGroupId = createScheduledDto.TransactionGroupId,
+            TransactionGroup = transactionGroup,
+            ScheduledAt = createScheduledDto.ScheduledAt,
+            Status = Enums.ScheduledTransactionStatus.Scheduled
+        };
+
+        _context.ScheduledTransactions.Add(scheduledTransaction);
+        await _context.SaveChangesAsync();
+
+        return Result<ScheduledTransactionDto>.Success(ScheduledTransactionMapper.ToDto(scheduledTransaction));
+    }
+
+    public async Task<Result<List<ScheduledTransactionDto>>> GetUserScheduledTransactions(int userId)
+    {
+        var scheduledTransactionsResponse = await _context.ScheduledTransactions
+            .Include(st => st.TransactionGroup)
+            .Where(st => st.TransactionGroup.UserId == userId)
+            .ToListAsync();
+
+        var scheduledTransactions = scheduledTransactionsResponse.Select(st => ScheduledTransactionMapper.ToDto(st)).ToList();
+
+        return Result<List<ScheduledTransactionDto>>.Success(scheduledTransactions);
+
+    }
+
+    public async Task<Result<bool>> DeleteUserScheduledTransaction(int userId, int scheduledTransactionId)
+    {
+        var scheduledTransaction = await _context.ScheduledTransactions
+            .FirstOrDefaultAsync(st => st.Id == scheduledTransactionId && st.TransactionGroup.UserId == userId);
+
+        if (scheduledTransaction == null)
+        {
+            return Result<bool>.Failure(TransactionErrors.NotFound(scheduledTransactionId));
+        }
+
+        _context.ScheduledTransactions.Remove(scheduledTransaction);
+        await _context.SaveChangesAsync();
+
+        return Result<bool>.Success(true);
+    }
+
 }

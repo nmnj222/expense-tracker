@@ -9,5 +9,9 @@ public interface ITransactionService
     Task<Result<TransactionDetailsDto>> GetUserTransactionDetails(int userId, int transactionId);
     Task<Result<bool>> DeleteUserTransaction(int userId, int transactionId);
     Task<Result<TransactionDto>> CreateUserTransaction(int userId, CreateTransactionDto createTransactionDto);
+    Task<Result<List<ScheduledTransactionDto>>> GetUserScheduledTransactions(int userId);
+    Task<Result<ScheduledTransactionDto>> CreateUserScheduledTransaction(int userId, CreateScheduledTransactionDto createScheduledTransactionDto);
+    Task<Result<bool>> DeleteUserScheduledTransaction(int userId, int scheduledTransactionId);
+
 }
 

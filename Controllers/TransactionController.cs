@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ExpenseTracker.Controllers;
 
 [Authorize]
-[Route("api/[controller]")]
+[Route("api/transaction")]
 [ApiController]
 public class TransactionController(ITransactionService _transactionService) : ControllerBase
 {
@@ -56,11 +56,11 @@ public class TransactionController(ITransactionService _transactionService) : Co
     {
         var userId = User.GetUserId();
 
-        Result<bool> result = await _transactionService.DeleteUserTransaction(userId, transactionId);
+        Result<bool> deleteTransactionResult = await _transactionService.DeleteUserTransaction(userId, transactionId);
 
-        if (result.IsFailure)
+        if (deleteTransactionResult.IsFailure)
         {
-            return NotFound(result.Error);
+            return NotFound(deleteTransactionResult.Error);
         }
 
         return NoContent();

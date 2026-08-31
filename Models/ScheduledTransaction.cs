@@ -12,7 +12,13 @@ public class ScheduledTransaction
 
     public TransactionGroup TransactionGroup { get; set; } = null!;
 
+    public DateTime ScheduledAt { get; set; }
+
     public ScheduledTransactionStatus Status { get; set; }
 
     public string? ErrorMessage { get; set; }
+
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    public ScheduledTransaction() { }
 }

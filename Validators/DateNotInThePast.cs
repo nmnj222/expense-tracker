@@ -3,9 +3,8 @@
 namespace ExpenseTracker.Validators;
 
 [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
-public class GreaterThanZero : ValidationAttribute
+public class DateNotInThePast : ValidationAttribute
 {
-
     protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {
         if (IsValid(value))
@@ -13,17 +12,17 @@ public class GreaterThanZero : ValidationAttribute
             return ValidationResult.Success;
         }
 
-        return new ValidationResult($"Value {value} is not greater than 0", [validationContext.MemberName!]);
+        return new ValidationResult($"Value {value} is a Date in the past.", [validationContext.MemberName!]);
     }
 
     public override bool IsValid(object? value)
     {
-        if (value is not int)
+        if (value is not DateTime)
         {
             return false;
         }
 
-        if ((int)value <= 0)
+        if (((DateTime) value).ToUniversalTime() < DateTime.UtcNow)
         {
             return false;
         }

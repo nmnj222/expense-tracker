@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ExpenseTracker.Controllers;
 
 [Authorize]
-[Route("api/[controller]")]
+[Route("api/transaction-group")]
 [ApiController]
 public class TransactionGroupController(ITransactionGroupService _transactionGroupService) : ControllerBase
 {
