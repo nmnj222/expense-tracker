@@ -10,4 +10,5 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Transaction> Transactions { get; set; }
     public DbSet<SavingsPlan> SavingsPlans { get; set; }
     public DbSet<Reminder> Reminders { get; set; }
+    public DbSet<ScheduledTransaction> ScheduledTransactions { get; set; }
 }

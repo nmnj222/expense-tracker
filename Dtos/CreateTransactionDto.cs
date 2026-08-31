@@ -8,7 +8,4 @@ public record CreateTransactionDto
 
     [GreaterThanZero]
     public int TransactionGroupId { get; set; }
-
-    public bool IsScheduled { get; set; }
-    public DateTime? ScheduledAt { get; set; }
 }

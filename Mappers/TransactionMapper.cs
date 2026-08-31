@@ -19,8 +19,6 @@ public static class TransactionMapper
             Id = transaction.Id,
             Amount = transaction.Amount,
             TransactionGroup = TransactionGroupMapper.ToDto(transaction.TransactionGroup),
-            IsScheduled = transaction.IsScheduled,
-            ScheduledAt = transaction.ScheduledAt,
             CreatedAt = transaction.CreatedAt,
         };
 }

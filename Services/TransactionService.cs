@@ -53,16 +53,6 @@ public class TransactionService(ApplicationDbContext _context) : ITransactionSer
 
     public async Task<Result<TransactionDto>> CreateUserTransaction(int userId, CreateTransactionDto createDto)
     {
-        if (createDto.IsScheduled && createDto.ScheduledAt is null)
-        {
-            return Result<TransactionDto>.Failure(TransactionErrors.BadRequestScheduledAtMissing());
-        }
-
-        if (!createDto.IsScheduled && createDto.ScheduledAt is not null)
-        {
-            return Result<TransactionDto>.Failure(TransactionErrors.BadRequestScheduledExcess());
-        }
-
         var transactionGroup = await _context.TransactionGroups
             .FirstOrDefaultAsync(tg => tg.Id == createDto.TransactionGroupId && tg.UserId == userId);
 
@@ -75,9 +65,7 @@ public class TransactionService(ApplicationDbContext _context) : ITransactionSer
         {
             Amount = createDto.Amount,
             TransactionGroupId = createDto.TransactionGroupId,
-            TransactionGroup = transactionGroup,
-            IsScheduled = createDto.IsScheduled,
-            ScheduledAt = createDto.ScheduledAt ?? default,
+            TransactionGroup = transactionGroup
         };
 
         _context.Transactions.Add(transaction);
