@@ -5,8 +5,9 @@ namespace ExpenseTracker.Dtos;
 
 public record ScheduledTransactionDto
 {
+    public int Id { get; set; }
     public int Amount { get; set; }
-    public required TransactionGroup TransactionGroup { get; set; }
+    public required TransactionGroupDto TransactionGroup { get; set; }
     public DateTime ScheduledAt { get; set; }
     public ScheduledTransactionStatus Status { get; set; }
 }

@@ -38,11 +38,11 @@ public class ScheduledTransactionController(ITransactionService _transactionServ
     }
 
     [HttpDelete("{scheduledTransactionId}")]
-    public async Task<IActionResult> DeleteUserScheduledTransaction([FromRoute] int shceduledTransactionId)
+    public async Task<IActionResult> DeleteUserScheduledTransaction([FromRoute] int scheduledTransactionId)
     {
         var userId = User.GetUserId();
 
-        Result<bool> deleteScheduledTransactionResult = await _transactionService.DeleteUserScheduledTransaction(userId, shceduledTransactionId);
+        Result<bool> deleteScheduledTransactionResult = await _transactionService.DeleteUserScheduledTransaction(userId, scheduledTransactionId);
 
         if (deleteScheduledTransactionResult.IsFailure)
         {
