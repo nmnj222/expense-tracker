@@ -5,24 +5,19 @@ using ExpenseTracker.Dtos;
 using ExpenseTracker.Interfaces;
 using ExpenseTracker.Mappers;
 using ExpenseTracker.Models;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration.UserSecrets;
 
 namespace ExpenseTracker.Services;
 
-public class TransactionService(ApplicationDbContext _context) : ITransactionService
+public class TransactionService(ApplicationDbContext _context, ITransactionRepository _transactionRepository) : ITransactionService
 {
-    public async Task<Result<List<TransactionDto>>> GetUserTransactions(int userId)
+    public async Task<Result<PagedResult<TransactionDto>>> GetUserTransactions(int userId, TransactionFilterDto filterDto)
     {
-        var transactionsResponse = await _context.Transactions
-             .Include(t => t.TransactionGroup)
-             .Where(t => t.TransactionGroup.UserId == userId)
-             .ToListAsync();
+        var repositoryResponse = await _transactionRepository.GetUserTransactions(userId, filterDto);
 
-        var transactions = transactionsResponse.Select(t => TransactionMapper.ToDto(t)).ToList();
+        List<TransactionDto> transactions = repositoryResponse.Transactions.Select(t => TransactionMapper.ToDto(t)).ToList();
 
-        return Result<List<TransactionDto>>.Success(transactions);
+        return Result<PagedResult<TransactionDto>>.Success(new PagedResult<TransactionDto>(transactions, repositoryResponse.TotalCount, repositoryResponse.PageSize, repositoryResponse.Page));
     }
     public async Task<Result<TransactionDetailsDto>> GetUserTransactionDetails(int userId, int transactionId)
     {
@@ -67,7 +62,8 @@ public class TransactionService(ApplicationDbContext _context) : ITransactionSer
         {
             Amount = createDto.Amount,
             TransactionGroupId = createDto.TransactionGroupId,
-            TransactionGroup = transactionGroup
+            TransactionGroup = transactionGroup,
+            CreatedAt = DateTime.UtcNow
         };
 
         _context.Transactions.Add(transaction);

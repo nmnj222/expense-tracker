@@ -13,11 +13,11 @@ namespace ExpenseTracker.Controllers;
 public class TransactionController(ITransactionService _transactionService) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<List<TransactionDto>>> GetUserTransactions()
+    public async Task<ActionResult<List<TransactionDto>>> GetUserTransactions([FromQuery] TransactionFilterDto filterDto)
     {
         var userId = User.GetUserId();
 
-        Result<List<TransactionDto>> transactionsResult = await _transactionService.GetUserTransactions(userId);
+        Result<PagedResult<TransactionDto>> transactionsResult = await _transactionService.GetUserTransactions(userId, filterDto);
 
         return Ok(transactionsResult.Value);
     }

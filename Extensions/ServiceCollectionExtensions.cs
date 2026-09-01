@@ -1,6 +1,7 @@
 ﻿using Coravel;
 using ExpenseTracker.Interfaces;
 using ExpenseTracker.Jobs;
+using ExpenseTracker.Repositories;
 using ExpenseTracker.Services;
 
 namespace ExpenseTracker.Extensions;
@@ -19,6 +20,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ITransactionService, TransactionService>();
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddTransient<ProcessScheduledTransactions>();
+        services.AddScoped<ITransactionRepository, TransactionRepository>();
 
         return services;
     }

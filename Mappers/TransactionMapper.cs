@@ -10,7 +10,8 @@ public static class TransactionMapper
         {
             Id = transaction.Id,
             Amount = transaction.Amount,
-            TransactionGroup = TransactionGroupMapper.ToDto(transaction.TransactionGroup)
+            TransactionGroup = TransactionGroupMapper.ToDto(transaction.TransactionGroup),
+            CreatedAt = transaction.CreatedAt
         };
 
     public static TransactionDetailsDto ToDetailsDto(Transaction transaction) =>
