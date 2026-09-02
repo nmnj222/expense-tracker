@@ -26,7 +26,9 @@ public class TransactionController(ITransactionService _transactionService) : Co
     public async Task<ActionResult<TransactionDto>> CreateUserTransaction(CreateTransactionDto createDto)
     {
         var userId = User.GetUserId();
-        Result<TransactionDto> transactionCreateResult = await _transactionService.CreateUserTransaction(userId, createDto);
+        var isUserPremium = User.GetIsPremium();
+
+        Result<TransactionDto> transactionCreateResult = await _transactionService.CreateUserTransaction(userId, isUserPremium, createDto);
 
         if (transactionCreateResult.IsFailure)
         {

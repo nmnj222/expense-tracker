@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ExpenseTracker.Services;
 
-public class TransactionService(ApplicationDbContext _context, ITransactionRepository _transactionRepository) : ITransactionService
+public class TransactionService(ApplicationDbContext _context, ITransactionRepository _transactionRepository, ReminderChannelService _reminderService) : ITransactionService
 {
     public async Task<Result<PagedResult<TransactionDto>>> GetUserTransactions(int userId, TransactionFilterDto filterDto)
     {
@@ -48,9 +48,10 @@ public class TransactionService(ApplicationDbContext _context, ITransactionRepos
         return Result<bool>.Success(true);
     }
 
-    public async Task<Result<TransactionDto>> CreateUserTransaction(int userId, CreateTransactionDto createDto)
+    public async Task<Result<TransactionDto>> CreateUserTransaction(int userId, bool isUserPremium, CreateTransactionDto createDto)
     {
         var transactionGroup = await _context.TransactionGroups
+            .Include(tg => tg.Transactions)
             .FirstOrDefaultAsync(tg => tg.Id == createDto.TransactionGroupId && tg.UserId == userId);
 
         if (transactionGroup is null)
@@ -68,6 +69,18 @@ public class TransactionService(ApplicationDbContext _context, ITransactionRepos
 
         _context.Transactions.Add(transaction);
         await _context.SaveChangesAsync();
+
+        //stream reminder if the cap is passed
+
+        if (isUserPremium && transactionGroup.TransactionType == Enums.TransactionType.Expense)
+        {
+            var totalSpent = transactionGroup.Transactions.Sum(t => t.Amount);
+
+            if (totalSpent > transactionGroup.MonthlyCap)
+            {
+                await _reminderService.PublishReminderAsync($"User with id={userId} surpassed budget cap on group {transactionGroup.Name}, groupId={transactionGroup.Id}");
+            }
+        }
 
         return Result<TransactionDto>.Success(TransactionMapper.ToDto(transaction));
     }
