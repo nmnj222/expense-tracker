@@ -22,7 +22,6 @@ public class TransactionGroup
     public DateTime UpdatedAt { get; set; }
 
     public List<Transaction> Transactions { get; set; } = new();
-    public List<Reminder> Reminders { get; set; } = new();
 
     public TransactionGroup() { }
 }
