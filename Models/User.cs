@@ -27,6 +27,8 @@ public class User
 
     public List<TransactionGroup> TransactionGroups { get; set; } = new();
 
+    public List<Reminder> Reminders { get; set; } = new();
+
     public List<SavingsPlan> SavingPlans { get; set; } = new();
 
     public User() { }

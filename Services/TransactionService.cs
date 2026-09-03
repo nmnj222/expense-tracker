@@ -48,9 +48,10 @@ public class TransactionService(ApplicationDbContext _context, ITransactionRepos
         return Result<bool>.Success(true);
     }
 
-    public async Task<Result<TransactionDto>> CreateUserTransaction(int userId, CreateTransactionDto createDto)
+    public async Task<Result<TransactionDto>> CreateUserTransaction(int userId, bool isUserPremium, CreateTransactionDto createDto)
     {
         var transactionGroup = await _context.TransactionGroups
+            .Include(tg => tg.Transactions)
             .FirstOrDefaultAsync(tg => tg.Id == createDto.TransactionGroupId && tg.UserId == userId);
 
         if (transactionGroup is null)
@@ -66,8 +67,27 @@ public class TransactionService(ApplicationDbContext _context, ITransactionRepos
             CreatedAt = DateTime.UtcNow
         };
 
+        if (isUserPremium && transactionGroup.TransactionType == Enums.TransactionType.Expense)
+        {
+            var totalSpent = transactionGroup.Transactions.Sum(t => t.Amount) + transaction.Amount;
+
+            if (totalSpent > transactionGroup.MonthlyCap)
+            {
+                string message = $"User with id={userId} surpassed budget cap on group {transactionGroup.Name}, groupId={transactionGroup.Id}";
+                Notification notification = new Notification
+                {
+                    UserId = userId,
+                    Message = message,
+                    ReminderId = null,
+                    CreatedAt = DateTime.UtcNow
+                };
+                _context.ReminderNotifications.Add(notification);
+            }
+        }
+
         _context.Transactions.Add(transaction);
         await _context.SaveChangesAsync();
+
 
         return Result<TransactionDto>.Success(TransactionMapper.ToDto(transaction));
     }

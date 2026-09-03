@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace ExpenseTracker.Extensions
 {
@@ -15,6 +16,20 @@ namespace ExpenseTracker.Extensions
                     "Authenticated user does not have a valid ID");
             }
             return userId;
+        }
+
+        public static bool GetIsPremium(this ClaimsPrincipal user)
+        {
+            var isPremiumClaim = user.FindFirstValue("isPremium");
+
+
+
+            if (!bool.TryParse(isPremiumClaim, out var isPremium))
+            {
+                throw new InvalidOperationException(
+                    "Authenticated user does not have a valid permission");
+            }
+            return isPremium;
         }
     }
 }
