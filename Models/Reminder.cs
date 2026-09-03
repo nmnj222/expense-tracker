@@ -22,4 +22,6 @@ public class Reminder
 
     public DateTime NextSendAt { get; set; }
 
+    public Reminder() { }
+
 }
