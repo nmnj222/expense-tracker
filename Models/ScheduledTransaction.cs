@@ -20,5 +20,4 @@ public class ScheduledTransaction
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-    public ScheduledTransaction() { }
 }
