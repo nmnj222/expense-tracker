@@ -1,4 +1,5 @@
-﻿using ExpenseTracker.Data;
+﻿using ExpenseTracker.Common.Results;
+using ExpenseTracker.Data;
 using ExpenseTracker.Dtos;
 using ExpenseTracker.Interfaces;
 using ExpenseTracker.Models;
@@ -8,7 +9,7 @@ namespace ExpenseTracker.Repositories;
 
 public class TransactionRepository(ApplicationDbContext _context) : ITransactionRepository
 {
-    public async Task<(List<Transaction> Transactions, int TotalCount, int PageSize, int Page)> GetUserTransactions(
+    public async Task<PagedResult<Transaction>> GetUserTransactions(
           int userId,
           TransactionFilterDto filterDto)
     {
@@ -34,8 +35,6 @@ public class TransactionRepository(ApplicationDbContext _context) : ITransaction
             _ => query.OrderByDescending(t => t.CreatedAt)
         };
 
-        var totalCount = await query.CountAsync();
-
         int page = Math.Max(
             filterDto.Page.GetValueOrDefault(1),
             1);
@@ -47,9 +46,16 @@ public class TransactionRepository(ApplicationDbContext _context) : ITransaction
 
         var transactions = await query
             .Skip((page - 1) * pageSize)
-            .Take(pageSize)
+            .Take(pageSize + 1)
             .ToListAsync();
 
-        return (transactions, totalCount, pageSize, page);
+        var hasNextPage = transactions.Count > pageSize;
+
+        if (hasNextPage)
+        {
+            transactions.RemoveAt(transactions.Count - 1);
+        }
+
+        return new PagedResult<Transaction>(transactions, pageSize, page, hasNextPage);
     }
 }

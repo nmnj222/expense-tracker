@@ -1,4 +1,5 @@
-﻿using ExpenseTracker.Dtos;
+﻿using ExpenseTracker.Common.Results;
+using ExpenseTracker.Dtos;
 using ExpenseTracker.Models;
 
 namespace ExpenseTracker.Interfaces;
@@ -6,7 +7,5 @@ namespace ExpenseTracker.Interfaces;
 public interface ITransactionRepository
 {
 
-    Task<(List<Transaction> Transactions, int TotalCount, int PageSize, int Page)> GetUserTransactions(
-    int userId,
-    TransactionFilterDto filterDto);
+    Task<PagedResult<Transaction>> GetUserTransactions(int userId, TransactionFilterDto filterDto);
 }

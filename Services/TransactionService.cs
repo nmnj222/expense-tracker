@@ -13,11 +13,11 @@ public class TransactionService(ApplicationDbContext _context, ITransactionRepos
 {
     public async Task<Result<PagedResult<TransactionDto>>> GetUserTransactions(int userId, TransactionFilterDto filterDto)
     {
-        (List<Transaction> Transactions, int TotalCount, int PageSize, int Page) pagedUserTransactions = await _transactionRepository.GetUserTransactions(userId, filterDto);
+        PagedResult<Transaction> pagedUserTransactions = await _transactionRepository.GetUserTransactions(userId, filterDto);
 
-        List<TransactionDto> transactions = pagedUserTransactions.Transactions.Select(t => TransactionMapper.ToDto(t)).ToList();
+        List<TransactionDto> transactions = pagedUserTransactions.Items.Select(t => TransactionMapper.ToDto(t)).ToList();
 
-        return Result<PagedResult<TransactionDto>>.Success(new PagedResult<TransactionDto>(transactions, pagedUserTransactions.TotalCount, pagedUserTransactions.PageSize, pagedUserTransactions.Page));
+        return Result<PagedResult<TransactionDto>>.Success(new PagedResult<TransactionDto>(transactions, pagedUserTransactions.PageSize, pagedUserTransactions.Page, pagedUserTransactions.HasNextPage));
     }
     public async Task<Result<TransactionDetailsDto>> GetUserTransactionDetails(int userId, int transactionId)
     {
