@@ -58,4 +58,29 @@ public class ReminderService(ApplicationDbContext _context) : IReminderService
 
         return Result<List<ReminderDto>>.Success(reminders);
     }
+
+    public async Task<List<Notification>> GetUnreadNotifications(
+       int userId,
+       CancellationToken cancellationToken)
+    {
+        return await _context.ReminderNotifications
+            .Where(n =>
+                n.UserId == userId &&
+                !n.IsRead)
+            .OrderBy(n => n.CreatedAt)
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task MarkAsRead(
+    IEnumerable<Notification> notifications,
+    CancellationToken cancellationToken)
+    {
+        foreach (var notification in notifications)
+        {
+            notification.IsRead = true;
+        }
+
+        await _context.SaveChangesAsync(cancellationToken);
+    }
+
 }

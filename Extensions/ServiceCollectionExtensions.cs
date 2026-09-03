@@ -23,7 +23,6 @@ public static class ServiceCollectionExtensions
         services.AddTransient<ProcessReminders>();
         services.AddScoped<ITransactionRepository, TransactionRepository>();
         services.AddScoped<IReminderService, ReminderService>();
-        services.AddSingleton<ReminderChannelService>();
 
         return services;
     }

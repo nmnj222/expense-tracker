@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ExpenseTracker.Services;
 
-public class TransactionService(ApplicationDbContext _context, ITransactionRepository _transactionRepository, ReminderChannelService _reminderService) : ITransactionService
+public class TransactionService(ApplicationDbContext _context, ITransactionRepository _transactionRepository) : ITransactionService
 {
     public async Task<Result<PagedResult<TransactionDto>>> GetUserTransactions(int userId, TransactionFilterDto filterDto)
     {
@@ -67,20 +67,27 @@ public class TransactionService(ApplicationDbContext _context, ITransactionRepos
             CreatedAt = DateTime.UtcNow
         };
 
-        _context.Transactions.Add(transaction);
-        await _context.SaveChangesAsync();
-
-        //stream reminder if the cap is passed
-
         if (isUserPremium && transactionGroup.TransactionType == Enums.TransactionType.Expense)
         {
-            var totalSpent = transactionGroup.Transactions.Sum(t => t.Amount);
+            var totalSpent = transactionGroup.Transactions.Sum(t => t.Amount) + transaction.Amount;
 
             if (totalSpent > transactionGroup.MonthlyCap)
             {
-                await _reminderService.PublishReminderAsync($"User with id={userId} surpassed budget cap on group {transactionGroup.Name}, groupId={transactionGroup.Id}");
+                string message = $"User with id={userId} surpassed budget cap on group {transactionGroup.Name}, groupId={transactionGroup.Id}";
+                Notification notification = new Notification
+                {
+                    UserId = userId,
+                    Message = message,
+                    ReminderId = null,
+                    CreatedAt = DateTime.UtcNow
+                };
+                _context.ReminderNotifications.Add(notification);
             }
         }
+
+        _context.Transactions.Add(transaction);
+        await _context.SaveChangesAsync();
+
 
         return Result<TransactionDto>.Success(TransactionMapper.ToDto(transaction));
     }

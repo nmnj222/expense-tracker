@@ -1,11 +1,12 @@
 ﻿using Coravel.Invocable;
 using ExpenseTracker.Data;
+using ExpenseTracker.Models;
 using ExpenseTracker.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace ExpenseTracker.Jobs;
 
-public class ProcessReminders(ApplicationDbContext _context, ReminderChannelService _reminderChannelService, ILogger<ProcessReminders> _logger) : IInvocable
+public class ProcessReminders(ApplicationDbContext _context, ILogger<ProcessReminders> _logger) : IInvocable
 {
     public async Task Invoke()
     {
@@ -28,8 +29,17 @@ public class ProcessReminders(ApplicationDbContext _context, ReminderChannelServ
 
             int totalSpent = await CalculateUserExpenses(dateFrom, dateTo, reminder.UserId);
 
-            string message = $"User with id: {reminder.UserId} - Spent a total amount of {totalSpent}, in date-range {dateFrom.Date} - {dateTo.Date}";
-            await _reminderChannelService.PublishReminderAsync(message);
+            string message = $"User with id: {reminder.UserId}, spent a total of {totalSpent} in the period: {dateFrom.Date} - {dateTo.Date}";
+
+            Notification notification = new Notification
+            {
+                UserId = reminder.UserId,
+                ReminderId = reminder.Id,
+                Message = message,
+                CreatedAt = now
+            };
+
+            _context.ReminderNotifications.Add(notification);
 
             reminder.LastSentAt = now;
             reminder.NextSendAt = reminder.ReminderFrequency == Enums.ReminderFrequency.Monthly ? dateTo.AddMonths(1) : dateTo.AddDays(7);

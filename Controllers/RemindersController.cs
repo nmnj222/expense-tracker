@@ -2,15 +2,16 @@
 using ExpenseTracker.Dtos;
 using ExpenseTracker.Extensions;
 using ExpenseTracker.Interfaces;
-using ExpenseTracker.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Runtime.InteropServices;
+using System.Text.Json;
 
 namespace ExpenseTracker.Controllers;
 
 [ApiController]
 [Route("api/reminders")]
-public class RemindersController(ReminderChannelService _reminderChannelService, IReminderService _reminderService) : ControllerBase
+public class RemindersController(IReminderService _reminderService) : ControllerBase
 {
     [Authorize]
     [HttpGet]
@@ -55,10 +56,13 @@ public class RemindersController(ReminderChannelService _reminderChannelService,
         return NoContent();
     }
 
-    [HttpGet("monthly-cap")]
-    public async Task MonthlyCapReminders()
+    [Authorize]
+    [HttpGet("notifications")]
+    public async Task StreamNotifications()
     {
-        Console.WriteLine(">>> MONTHLY CAP ENDPOINT HIT");
+
+        var userId = User.GetUserId();
+        var cancellationToken = HttpContext.RequestAborted;
 
         Response.ContentType = "text/event-stream";
         Response.Headers.Append("Cache-Control", "no-cache");
@@ -66,16 +70,27 @@ public class RemindersController(ReminderChannelService _reminderChannelService,
         await Response.StartAsync();
 
         await Response.WriteAsync(": connected\n\n");
-        await Response.Body.FlushAsync();
+        await Response.Body.FlushAsync(cancellationToken);
 
-        var cancellationToken = HttpContext.RequestAborted;
-
-        await foreach (var message in _reminderChannelService.Reader.ReadAllAsync(cancellationToken))
+        while (!cancellationToken.IsCancellationRequested)
         {
-            var sseMessage = $"data: {message}\n\n";
+            var notifications = await _reminderService.GetUnreadNotifications(userId, cancellationToken);
 
-            await Response.WriteAsync(sseMessage);
-            await Response.Body.FlushAsync(cancellationToken);
+            foreach (var notification in notifications)
+            {
+                var json = JsonSerializer.Serialize(notification);
+
+                await Response.WriteAsync($"data: {json}\n\n", cancellationToken);
+
+                await Response.Body.FlushAsync(cancellationToken);
+            }
+
+            if (notifications.Count > 0)
+            {
+                await _reminderService.MarkAsRead(notifications, cancellationToken);
+            }
+
+            await Task.Delay(TimeSpan.FromSeconds(2), cancellationToken);
 
         }
     }

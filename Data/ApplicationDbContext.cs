@@ -11,4 +11,6 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<SavingsPlan> SavingsPlans { get; set; }
     public DbSet<Reminder> Reminders { get; set; }
     public DbSet<ScheduledTransaction> ScheduledTransactions { get; set; }
+    public DbSet<Notification> ReminderNotifications { get; set; }
+
 }
