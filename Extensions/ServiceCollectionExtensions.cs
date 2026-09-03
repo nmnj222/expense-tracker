@@ -21,6 +21,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddTransient<ProcessScheduledTransactions>();
         services.AddScoped<ITransactionRepository, TransactionRepository>();
+        services.AddScoped<IReminderService, ReminderService>();
         services.AddSingleton<ReminderChannelService>();
 
         return services;
