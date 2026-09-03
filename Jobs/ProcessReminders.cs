@@ -44,7 +44,7 @@ public class ProcessReminders(ApplicationDbContext _context, ReminderChannelServ
     private async Task<int> CalculateUserExpenses(DateTime dateFrom, DateTime dateTo, int userId)
     {
         return await _context.Transactions
-            .Where(t => t.CreatedAt >= dateFrom && t.CreatedAt <= dateTo && t.TransactionGroup.UserId == userId)
+            .Where(t => t.CreatedAt >= dateFrom && t.CreatedAt <= dateTo && t.TransactionGroup.UserId == userId && t.TransactionGroup.TransactionType == Enums.TransactionType.Expense)
             .SumAsync(t => t.Amount);
     }
 }
