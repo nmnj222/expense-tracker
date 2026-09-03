@@ -8,5 +8,12 @@
             $"Transaction Group with ID {id} was not found.",
             ErrorType.NotFound
         );
+
+        public static Error NotFound()
+        => new(
+             "TransactionGroup.NotFound",
+            $"Transaction Group was not found.",
+            ErrorType.NotFound
+        );
     }
 }

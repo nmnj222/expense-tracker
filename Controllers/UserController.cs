@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ExpenseTracker.Controllers;
 
 [Authorize]
-[Route("api/[controller]")]
+[Route("api/user")]
 [ApiController]
 public class UserController(IUserService _userService) : ControllerBase
 {

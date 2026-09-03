@@ -1,7 +1,8 @@
-﻿
+﻿using ExpenseTracker.Enums;
+
 namespace ExpenseTracker.Models;
 
-public class Transaction
+public class ScheduledTransaction
 {
     public int Id { get; set; }
 
@@ -11,8 +12,12 @@ public class Transaction
 
     public TransactionGroup TransactionGroup { get; set; } = null!;
 
+    public DateTime ScheduledAt { get; set; }
+
+    public ScheduledTransactionStatus Status { get; set; }
+
+    public string? ErrorMessage { get; set; }
+
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public DateTime UpdatedAt { get; set; }
 
 }
-
