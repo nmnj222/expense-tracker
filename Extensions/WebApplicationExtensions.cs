@@ -22,6 +22,12 @@ public static class WebApplicationExtensions
             .HourlyAt(1);
         });
 
+        app.Services.UseScheduler(scheduler =>
+        {
+            scheduler.Schedule<ProcessReminders>()
+            .EveryFiveMinutes();
+        });
+
         app.UseHttpsRedirection();
         app.UseAuthentication();
         app.UseAuthorization();
