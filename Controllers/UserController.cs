@@ -17,7 +17,6 @@ public class UserController(IUserService _userService) : ControllerBase
     public async Task<ActionResult<UserDto>> GetMe()
     {
         var userId = User.GetUserId();
-        Console.WriteLine(User.GetIsPremium());
 
         Result<UserDto> getMeResult = await _userService.GetMe(userId);
 
